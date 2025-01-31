@@ -5,27 +5,32 @@ import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	worker: {
+		format: "es"
+	},
 	//@ts-expect-error
 	base: process.env.BASE_PATH || "/",
 	plugins: [
     svgr(),
 		react(),
 		VitePWA({
-			registerType: "autoUpdate",
-			injectRegister: false,
+			registerType: "prompt",
+			injectRegister: "script-defer",
 
 			pwaAssets: {
 				disabled: false,
 				config: true,
 			},
-
+			
 			manifest: {
 				name: "Cubic - Speedcubing Timer",
 				short_name: "Cubic",
 				description: "Cubic, a sleek, modern speedcubing timer",
 				theme_color: "#ffffff",
 			},
-
+			// injectManifest: {
+			// 	rollupFormat: "es"
+			// },
 			workbox: {
 				globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
 				cleanupOutdatedCaches: true,
