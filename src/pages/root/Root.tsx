@@ -28,7 +28,7 @@ import "@fontsource/inter/index.css";
 import "@fontsource/afacad/index.css";
 import "@fontsource/azeret-mono/index.css";
 
-import CubicLogo from "../../assets/logo.svg?react";
+import QubicLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
 
 
@@ -112,7 +112,7 @@ function Topbar() {
 				// marginRight="auto"
 				alignItems={"center"}
 			> */}
-				<CubicLogo
+				<QubicLogo
 					style={{
 						// position: 'absolute',
 						// left: "50%",
@@ -140,7 +140,7 @@ function Topbar() {
 					fontSize={"30px"}
 					fontWeight={"600"}
 				>
-					Cubic
+					qubic
 				</Typography> */}
 			{/* </Stack> */}
 		</Box>
@@ -236,7 +236,7 @@ function Sidebar() {
 					},
 				}}
 			>
-				<CubicLogo
+				<QubicLogo
 					style={{
 						display: "inline-block",
 						width: "44px",
@@ -259,7 +259,7 @@ function Sidebar() {
 					fontSize={"32px"}
 					fontWeight={"600"}
 				>
-					Cubic
+					qubic
 				</Typography>
 			</Box>
 		</Stack>

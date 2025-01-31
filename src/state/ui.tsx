@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-const sidebarCollapsedLocalstorageKey = "cubic-sidebar-collapsed";
+const sidebarCollapsedLocalstorageKey = "qubic-sidebar-collapsed";
 
 const baseSidebarCollapsedStateAtom = atom(localStorage.getItem(sidebarCollapsedLocalstorageKey) === "true");
 export const sidebarCollapsedAtom = atom<boolean, [boolean], void>(

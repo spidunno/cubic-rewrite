@@ -23,9 +23,9 @@ export default defineConfig({
 			},
 			
 			manifest: {
-				name: "Cubic - Speedcubing Timer",
-				short_name: "Cubic",
-				description: "Cubic, a sleek, modern speedcubing timer",
+				name: "qubic - Speedcubing Timer",
+				short_name: "qubic",
+				description: "qubic, a sleek, modern speedcubing timer",
 				theme_color: "#ffffff",
 			},
 			// injectManifest: {
