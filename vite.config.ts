@@ -5,6 +5,8 @@ import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	//@ts-expect-error
+	base: process.env.BASE_PATH || "/",
 	plugins: [
     svgr(),
 		react(),
