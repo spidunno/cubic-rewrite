@@ -28,7 +28,7 @@ import "@fontsource/inter/index.css";
 import "@fontsource/afacad/index.css";
 import "@fontsource/azeret-mono/index.css";
 
-import QubicLogo from "../../assets/logo.svg?react";
+import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
 
 
@@ -112,7 +112,7 @@ function Topbar() {
 				// marginRight="auto"
 				alignItems={"center"}
 			> */}
-				<QubicLogo
+				<QbqLogo
 					style={{
 						// position: 'absolute',
 						// left: "50%",
@@ -140,7 +140,7 @@ function Topbar() {
 					fontSize={"30px"}
 					fontWeight={"600"}
 				>
-					qubic
+					qbq
 				</Typography> */}
 			{/* </Stack> */}
 		</Box>
@@ -236,7 +236,7 @@ function Sidebar() {
 					},
 				}}
 			>
-				<QubicLogo
+				<QbqLogo
 					style={{
 						display: "inline-block",
 						width: "44px",
@@ -250,7 +250,7 @@ function Sidebar() {
 				<Typography
 					component={"div"}
 					sx={{
-						marginLeft: sidebarCollapsed ? "31px" : "12px",
+						marginLeft: sidebarCollapsed ? "70px" : "12px",
 						transition: "margin-left 150ms ease, letter-spacing 350ms ease",
 						letterSpacing: sidebarCollapsed ? "0.5rem" : "normal",
 						userSelect: "none",
@@ -259,7 +259,7 @@ function Sidebar() {
 					fontSize={"32px"}
 					fontWeight={"600"}
 				>
-					qubic
+					qbq
 				</Typography>
 			</Box>
 		</Stack>

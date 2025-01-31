@@ -38,7 +38,7 @@ export interface DbShape {
 const defaultSession = createSession("My Session", Date.now(), "default");
 
 export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
-	name: "qubic-data",
+	name: "qbq-data",
 	// @ts-expect-error
 	initialData: {
 		sessions: [defaultSession],
