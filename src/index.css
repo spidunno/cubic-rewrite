@@ -57,3 +57,6 @@
   /* display: none; */
   animation-duration:0ms;
 }
+* {
+  -webkit-tap-highlight-color: transparent;
+}

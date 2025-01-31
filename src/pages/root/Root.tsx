@@ -5,7 +5,6 @@ import {
 	useMatch,
 	useViewTransitionState,
 } from "react-router";
-import "@fontsource/inter/index.css";
 import {
 	Box,
 	CssBaseline,
@@ -18,15 +17,23 @@ import {
 } from "@mui/joy";
 import NavButton from "./NavButton";
 import { Icon } from "../../components/Icon";
-import { MaterialSymbol } from "material-symbols";
 import { sidebarCollapsedAtom } from "../../state/ui";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { themeModeAtom } from "../../state/settings";
 import { useEffect } from "react";
+
+import type { MaterialSymbol } from "material-symbols";
+
+import "@fontsource/inter/index.css";
 import "@fontsource/afacad/index.css";
+import "@fontsource/azeret-mono/index.css";
+
 import CubicLogo from "../../assets/logo.svg?react";
+import { _storageDb } from "../../state/storage";
+
 
 export default function Root() {
+	useAtomValue(_storageDb.suspendBeforeInit);
 	const location = useLocation();
 	const isTransitioning = useViewTransitionState(location);
 	const ThemeUpdater = () => {
@@ -70,14 +77,16 @@ function Topbar() {
 	return (
 		<Box
 			sx={(theme) => ({
+				position: 'relative',
 				display: "flex",
 				flexDirection: "row",
 				alignItems: "center",
 				width: "100%",
 				height: "64px",
 				alignContent: "center",
-				justifyContent: "start",
+				justifyContent: "space-between",
 				paddingLeft: "10px",
+				paddingRight: "10px",
 				borderBottom: `1px solid ${theme.palette.neutral.outlinedBorder}`,
 				viewTransitionName: "topbar",
 				transition: "margin-top 150ms ease, visibility 150ms linear",
@@ -90,19 +99,27 @@ function Topbar() {
 			})}
 		>
 			<IconButton
+				sx={{}}
 				size="lg"
 				onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
 			>
 				<Icon icon="menu" />
 			</IconButton>
-			<Stack
+			{/* <Stack
 				direction="row"
-				marginLeft={"auto"}
-				marginRight="16px"
+				// marginLeft={"auto"}
+				alignSelf={"center"}
+				// marginRight="auto"
 				alignItems={"center"}
-			>
+			> */}
 				<CubicLogo
 					style={{
+						// position: 'absolute',
+						// left: "50%",
+						// right: "50%",
+						// marginLeft: "auto",
+						// marginRight: "",
+						alignSelf: 'center',
 						// display: "inline-block",
 						width: "40px",
 						height: "40px",
@@ -110,7 +127,8 @@ function Topbar() {
 					height={"44px"}
 					width={"44px"}
 				/>
-				<Typography
+				<Box width={"44px"} height={"44px"}></Box>
+				{/* <Typography
 					component={"div"}
 					sx={{
 						// display: "inline-block1",
@@ -123,8 +141,8 @@ function Topbar() {
 					fontWeight={"600"}
 				>
 					Cubic
-				</Typography>
-			</Stack>
+				</Typography> */}
+			{/* </Stack> */}
 		</Box>
 	);
 }

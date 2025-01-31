@@ -27,11 +27,10 @@ export interface Solve {
 	scramble: string;
 }
 
-export const currentEventAtom = atom<EventID>("333");
-
-export const currentSolveAtom = atom<Solve | null>(null);
+export const cubeTypeAtom = atom<EventID>("333");
+// export const currentSolveAtom = atom<Solve | null>(null);
 const baseCurrentScrambleAtom = atom<Promise<Alg> | null>(null);
-export const currentScrambleAtom = atom(
+export const scrambleAtom = atom(
 	async (get) => {
 		return get(baseCurrentScrambleAtom);
 	},
@@ -40,5 +39,15 @@ export const currentScrambleAtom = atom(
 		set(baseCurrentScrambleAtom, scramble);
 	}
 );
+
+export const timeStartedAtAtom = atom<Date | null>(null);
+export const spaceTimerStartedAtom = atom(0);
+export const inspectionTimerAtom = atom(0);
+export const inInspectionAtom = atom(false);
+export const canStartAtom = atom(false);
+export const finalTimeAtom = atom<number>(0);
+
+export const solvingAtom = atom(false);
+export const plusTwoAtom = atom(false);
 
 // useAtom(currentScrambleAtom)[0]
