@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, createBrowserRouter, Route, RouterProvider, Routes } from "react-router"; 
+import { createBrowserRouter, RouterProvider, } from "react-router"; 
 import Main from "./pages/timer/TimerPage";
 import "./index.css";
 import Root from "./pages/root/Root";

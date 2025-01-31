@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack, Typography } from "@mui/joy";
 import Scramble from "./Scramble";
-import { Suspense, useCallback, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
 	canStartAtom,
@@ -15,11 +15,9 @@ import { placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
 import { freezeTimeLengthAtom } from "../../state/settings";
 
-const timeTextID = "cubic__time-text";
-
 export default function TimerPage() {
 	const nextScramble = useSetAtom(scrambleAtom);
-	const [cubeType, setCubeType] = useAtom(cubeTypeAtom);
+	const cubeType = useAtomValue(cubeTypeAtom);
 
 	const freezeTimeLength = useAtomValue(freezeTimeLengthAtom);
 	const [spaceTimerStarted, setSpaceTimerStarted] = useAtom(

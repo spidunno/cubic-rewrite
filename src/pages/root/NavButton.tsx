@@ -1,7 +1,6 @@
 import { PropsOf } from "@emotion/react";
 import { Button, IconButton, styled } from "@mui/joy";
-import { MouseEventHandler } from "react";
-import { Link, To, useNavigate } from "react-router";
+import { Link, To } from "react-router";
 
 type NavButtonProps = PropsOf<typeof IconButton> & {
 	to: To;
@@ -10,7 +9,6 @@ type NavButtonProps = PropsOf<typeof IconButton> & {
 	icon?: React.ReactNode;
 };
 
-const IconButtonLink = styled(IconButton)(() => ({ textDecoration: "none" }));
 const ButtonLink = styled(Button)(() => ({ textDecoration: "none" }));
 
 export default function NavButton(props: NavButtonProps) {

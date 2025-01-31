@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { AllEvent } from "../util/cube";
 import { DefaultColorScheme } from "@mui/joy/styles/types";
 import { atomFamily } from "jotai/utils";
-import { Atom } from "jotai";
+import { WritableAtom } from "jotai";
 
 export interface Session {
 	id: string;
@@ -48,9 +48,9 @@ export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 	} as DbShape,
 });
 
-type FamilyGetter = <T extends keyof DbShape>(param: T) => Atom<DbShape[T]>;
+type FamilyGetter = <T extends keyof DbShape>(param: T) => WritableAtom<DbShape[T], [DbShape[T]], Promise<void>>;
 function familyGetter(param: keyof DbShape) {
-	return _storageDb.item(param) as unknown as Atom<DbShape[keyof DbShape]>
+	return _storageDb.item(param) as unknown as WritableAtom<DbShape[keyof DbShape], [DbShape[keyof DbShape]], Promise<void>>
 }
 
 export const storageDb = atomFamily(familyGetter) as FamilyGetter;

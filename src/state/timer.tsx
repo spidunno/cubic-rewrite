@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai";
+import { atom } from "jotai";
 
 import { randomScrambleForEvent } from "cubing/scramble";
 import { allEvents } from "../util/cube";
@@ -34,7 +34,7 @@ export const scrambleAtom = atom(
 	async (get) => {
 		return get(baseCurrentScrambleAtom);
 	},
-	async (get, set, event: EventID) => {
+	async (_get, set, event: EventID) => {
 		const scramble = randomScrambleForEvent(event);
 		set(baseCurrentScrambleAtom, scramble);
 	}

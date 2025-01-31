@@ -1,5 +1,3 @@
-import { randomScrambleForEvent } from "cubing/scramble";
-
 export const wcaEvents = {
 	"333": { puzzleID: "3x3x3", eventName: "3x3x3 Cube" },
 	"222": { puzzleID: "2x2x2", eventName: "2x2x2 Cube" },
