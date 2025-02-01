@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack, Typography } from "@mui/joy";
 import Scramble from "./Scramble";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, TouchEvent, useEffect, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
 	canStartAtom,
@@ -33,43 +33,54 @@ export default function TimerPage() {
 		setCanStart(false);
 	}, []);
 
-	useEffect(() => {
-		console.log(freezeTimeLength);
-		const keydownCallback = (event: KeyboardEvent) => {
-			if (event.key !== " " || event.repeat) return;
+	const downCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
+		if (event instanceof KeyboardEvent && (event.key !== " " || event.repeat))
+			return;
+		setCanStart(false);
+		if (solving) {
+			const endTime = Date.now();
+			setFinalTime(endTime - (timeStartedAt?.valueOf() || 0));
+			setSolving(false);
+			setTimeStartedAt(null);
+			nextScramble(cubeType);
+		} else {
+			setSpaceTimerStarted(Date.now());
+			timeoutRef.current = setTimeout(() => {
+				setCanStart(true);
+			}, freezeTimeLength);
+		}
+	};
+	const upCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
+		if (event instanceof KeyboardEvent && (event.key !== " " || event.repeat))
+			return;
+		if (!canStart) {
+			clearTimeout(timeoutRef.current);
+		} else {
+			setFinalTime(0);
+			const startTime = new Date();
+			setTimeStartedAt(startTime);
+			setSolving(true);
 			setCanStart(false);
-			if (solving) {
-				const endTime = Date.now();
-				setFinalTime(endTime - (timeStartedAt?.valueOf() || 0));
-				setSolving(false);
-				setTimeStartedAt(null);
-			} else {
-				setSpaceTimerStarted(Date.now());
-				timeoutRef.current = setTimeout(() => {
-					setCanStart(true);
-				}, freezeTimeLength);
-			}
-		};
-		const keyupCallback = (event: KeyboardEvent) => {
-			if (event.key !== " " || event.repeat) return;
-			if (!canStart) {
-				clearTimeout(timeoutRef.current);
-			} else {
-				setFinalTime(0);
-				const startTime = new Date();
-				setTimeStartedAt(startTime);
-				setSolving(true);
-				setCanStart(false);
-			}
-			setSpaceTimerStarted(0);
-		};
-		
-		document.addEventListener("keydown", keydownCallback);
-		document.addEventListener("keyup", keyupCallback);
+		}
+		setSpaceTimerStarted(0);
+	};
+
+	useEffect(() => {
+
+		document.addEventListener("keydown", downCallback);
+		document.addEventListener("keyup", upCallback);
+
+		// document.addEventListener("touchstart", downCallback);
+		// document.addEventListener("touchend", upCallback);
+
+		// document.addEventListener("contextmenu", contextMenuCallback);
 
 		return () => {
-			document.removeEventListener("keydown", keydownCallback);
-			document.removeEventListener("keyup", keyupCallback);
+			document.removeEventListener("keydown", downCallback);
+			document.removeEventListener("keyup", upCallback);
+
+			// document.removeEventListener("touchstart", downCallback);
+			// document.removeEventListener("touchend", upCallback);
 		};
 	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted]);
 
@@ -80,29 +91,49 @@ export default function TimerPage() {
 	}, [cubeType]);
 
 	return (
-		<Box sx={{ width: "100%", height: "100%" }}>
+		<Box
+			onContextMenu={(event) => {
+				event.preventDefault();
+			}}
+			sx={{ width: "100%", height: "100%" }}
+			onTouchStart={downCallback}
+			onTouchEnd={upCallback}
+		>
 			<Stack direction="column" width="100%" height="100%">
-				<Typography
-					level="body-md"
-					maxWidth={"450px"}
-					textAlign={"justify"}
-					sx={{ textAlignLast: "center" }}
-				>
-					<Suspense
-						fallback={
-							<Skeleton animation={"wave"} variant="inline">
-								{placeholderScrambles[cubeType]}
-							</Skeleton>
-						}
-					>
-						<Scramble />
-					</Suspense>
-				</Typography>
 				<Box
 					textAlign={"center"}
-					flex="1"
+					sx={{
+						marginTop: "auto",
+						// marginBottom: "15%",
+						width: "100%",
+						justifyItems: "center",
+					}}
+				>
+					<Typography
+						marginLeft={"auto"}
+						marginRight={"auto"}
+						level="body-md"
+						maxWidth={"450px"}
+						textAlign={"justify"}
+						sx={{ textAlignLast: "center" }}
+					>
+						<Suspense
+							fallback={
+								<Skeleton animation={"wave"} variant="inline">
+									{placeholderScrambles[cubeType]}
+								</Skeleton>
+							}
+						>
+							<Scramble />
+						</Suspense>
+					</Typography>
+				</Box>
+				<Box
+					textAlign={"center"}
+					// flex="1"
 					sx={{
 						width: "100%",
+						marginBottom: "auto",
 						containerType: "inline-size",
 						containerName: "timer-text-container",
 					}}

@@ -48,7 +48,7 @@ export type AllEvent = keyof typeof allEvents;
 
 export const placeholderScrambles = {
 	"222": "X' X X X X' X X' XX XX XX X'",
-	"333": "XX X' X XX XX X' X XX XX XX XX XX X XX XX X XX XX X' X X",
+	"333": "X' XX X' XX XX X' XX X' XX X XX X' XX X XX X' XX X' XX",
 	"444":
 		"X XX X' X X X X' XX X' XX X' XX XX X XX X' X' XX XX X XXX X XXX X' XXX XX XXX X' XXX X' XXX X X' XX' XX XX XX X' XX' XX' XX XX X XXX XX",
 	"555":
