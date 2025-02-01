@@ -28,14 +28,17 @@ export default function TimerPage() {
 	const [solving, setSolving] = useAtom(solvingAtom);
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
+	const down = useRef<boolean>(false);
 
 	useEffect(() => {
 		setCanStart(false);
 	}, []);
 
 	const downCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
-		if (event instanceof KeyboardEvent && (event.key !== " " || event.repeat))
-			return;
+		if ("key" in event && event.key !== " ") return;
+		// 	return;
+		if (down.current === true) return;
+		down.current = true;
 		setCanStart(false);
 		if (solving) {
 			const endTime = Date.now();
@@ -51,8 +54,10 @@ export default function TimerPage() {
 		}
 	};
 	const upCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
-		if (event instanceof KeyboardEvent && (event.key !== " " || event.repeat))
-			return;
+		if ("key" in event && event.key !== " ") return;
+
+		if (down.current === false) return;
+		down.current = false;
 		if (!canStart) {
 			clearTimeout(timeoutRef.current);
 		} else {
@@ -66,7 +71,6 @@ export default function TimerPage() {
 	};
 
 	useEffect(() => {
-
 		document.addEventListener("keydown", downCallback);
 		document.addEventListener("keyup", upCallback);
 
