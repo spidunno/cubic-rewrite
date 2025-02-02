@@ -49,9 +49,9 @@ export default function Root() {
 		<CssVarsProvider>
 			<ThemeUpdater />
 			<CssBaseline />
-			<Stack direction="column" width="100%" height="100%">
+			<Stack direction="column" width="100%" height="100vh">
 				<Topbar />
-				<Stack direction={"row"} flex={"1"}>
+				<Stack direction={"row"} flex={"1"} height="100%">
 					<Sidebar />
 					<Box sx={{ height: "100%" }} flex={"1"}>
 						<div
@@ -83,6 +83,7 @@ function Topbar() {
 				alignItems: "center",
 				width: "100%",
 				height: "64px",
+				minHeight: "64px",	
 				alignContent: "center",
 				justifyContent: "space-between",
 				paddingLeft: "10px",

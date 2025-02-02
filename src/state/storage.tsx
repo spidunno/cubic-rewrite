@@ -5,6 +5,8 @@ import { DefaultColorScheme } from "@mui/joy/styles/types";
 import { atomFamily } from "jotai/utils";
 import { WritableAtom } from "jotai";
 
+export const defaultFreezeTimeLength = 250;
+
 export interface Session {
 	id: string;
 	name: string;
@@ -47,7 +49,7 @@ export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 		solves: [],
 		"current-session": defaultSession.id,
 		"color-scheme": "system",
-		"freeze-time-length": 250
+		"freeze-time-length": defaultFreezeTimeLength
 	} as DbShape,
 });
 
