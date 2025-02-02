@@ -9,6 +9,7 @@ export interface Session {
 	id: string;
 	name: string;
 	createdAt: number;
+	cube_type: AllEvent;
 }
 export interface DatabaseSolve {
 	id: string;
@@ -29,7 +30,7 @@ export interface DatabaseSolve {
 }
 
 export interface DbShape {
-	sessions: Session[];
+	sessions: Record<string, Session | undefined>;
 	solves: DatabaseSolve[];
 	"current-session": string;
 	"color-scheme": DefaultColorScheme | "system";
@@ -42,7 +43,7 @@ export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 	name: "qbq-data",
 	// @ts-expect-error
 	initialData: {
-		sessions: [defaultSession],
+		sessions: {[defaultSession.id]: defaultSession},
 		solves: [],
 		"current-session": defaultSession.id,
 		"color-scheme": "system",
@@ -66,5 +67,6 @@ export function createSession(
 		id,
 		name,
 		createdAt,
+		cube_type: "333"
 	};
 }

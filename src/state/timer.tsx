@@ -3,6 +3,7 @@ import { atom } from "jotai";
 import { randomScrambleForEvent } from "cubing/scramble";
 import { allEvents } from "../util/cube";
 import { Alg } from "cubing/alg";
+import { currentSessionAtom } from "./general";
 
 export type EventID = keyof typeof allEvents;
 export interface Solve {
@@ -27,7 +28,20 @@ export interface Solve {
 	scramble: string;
 }
 
-export const cubeTypeAtom = atom<EventID>("333");
+export const cubeTypeAtom = atom<EventID, [EventID], void>(
+	(get) => {
+		return get(currentSessionAtom)?.cube_type || "333";
+	},
+	(get, set, cube_type) => {
+		const currentSession = get(currentSessionAtom);
+		if (currentSession) {
+			set(currentSessionAtom, {
+				...currentSession,
+				cube_type,
+			});
+		}
+	}
+);
 // export const currentSolveAtom = atom<Solve | null>(null);
 const baseCurrentScrambleAtom = atom<Promise<Alg> | null>(null);
 export const scrambleAtom = atom(

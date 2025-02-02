@@ -1,4 +1,4 @@
-import { Box, Skeleton, Stack, Typography } from "@mui/joy";
+import { Box, Option, Select, Skeleton, Stack, Typography } from "@mui/joy";
 import Scramble from "./Scramble";
 import { Suspense, TouchEvent, useEffect, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -11,14 +11,14 @@ import {
 	spaceTimerStartedAtom,
 	timeStartedAtAtom,
 } from "../../state/timer";
-import { placeholderScrambles } from "../../util/cube";
+import {  allEvents, placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
 import { freezeTimeLengthAtom } from "../../state/settings";
-import { currentSessionAtom, currentSessionIdAtom } from "../../state/general";
+import { currentSessionIdAtom, sessionsAtom } from "../../state/general";
 
 export default function TimerPage() {
 	const nextScramble = useSetAtom(scrambleAtom);
-	const cubeType = useAtomValue(cubeTypeAtom);
+	const [cubeType, setCubeType] = useAtom(cubeTypeAtom);
 
 	const freezeTimeLength = useAtomValue(freezeTimeLengthAtom);
 	const [spaceTimerStarted, setSpaceTimerStarted] = useAtom(
@@ -30,8 +30,8 @@ export default function TimerPage() {
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
 	const down = useRef<boolean>(false);
-	const currentSession = useAtomValue(currentSessionAtom);
-	const [ currentSessionId, setCurrentSessionId ] = useAtom(currentSessionIdAtom);
+	const sessions = useAtomValue(sessionsAtom);
+	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
 
 	useEffect(() => {
 		setCanStart(false);
@@ -91,7 +91,6 @@ export default function TimerPage() {
 			// document.removeEventListener("touchend", upCallback);
 		};
 	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted]);
-
 	// const setCurrentSolve = useSetAtom(currentSolveAtom);
 
 	useEffect(() => {
@@ -103,11 +102,40 @@ export default function TimerPage() {
 			onContextMenu={(event) => {
 				event.preventDefault();
 			}}
-			sx={{ width: "100%", height: "100%" }}
+			sx={{ width: "100%", height: "100%", display: 'flex', flexDirection: "column" }}
 			onTouchStart={downCallback}
 			onTouchEnd={upCallback}
 		>
-			{currentSession?.id}
+			<Stack direction={"row"} gap={"12px"} marginLeft={"12px"} marginTop="12px">
+				<Select
+					value={cubeType}
+					onChange={(_event, cube_type) => {
+						setCubeType(cube_type || "333");
+					}}
+				>
+					{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
+						return (
+							<Option value={event_id} key={event_id}>
+								{event_obj.eventName}
+							</Option>
+						);
+					})}
+				</Select>
+				<Select
+					value={currentSessionId}
+					onChange={(_event, session_id) => {
+						if (typeof session_id === "string") setCurrentSessionId(session_id);
+					}}
+				>
+					{Object.entries(sessions).map(([session_id, session_obj], _i) => {
+						return (
+							<Option value={session_id} key={session_id}>
+								{session_obj?.name}
+							</Option>
+						);
+					})}
+				</Select>
+			</Stack>
 			<Stack direction="column" width="100%" height="100%">
 				<Box
 					textAlign={"center"}

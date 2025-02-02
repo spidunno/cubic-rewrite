@@ -16,7 +16,7 @@ export const wcaEvents = {
 	"444bf": { puzzleID: "4x4x4", eventName: "4x4x4 Blindfolded" },
 	"555bf": { puzzleID: "5x5x5", eventName: "5x5x5 Blindfolded" },
 	"333mbf": { puzzleID: "3x3x3", eventName: "3x3x3 Multi-Blind" },
-};
+} as const;
 
 export const allEvents = {
 	...wcaEvents,
@@ -41,7 +41,7 @@ export const allEvents = {
 	// 	puzzleID: "loopover",
 	// 	eventName: "Loopover",
 	// },
-};
+} as const;
 
 export type WcaEvent = keyof typeof wcaEvents;
 export type AllEvent = keyof typeof allEvents;
