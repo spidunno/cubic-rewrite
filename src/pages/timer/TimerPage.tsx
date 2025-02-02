@@ -14,6 +14,7 @@ import {
 import { placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
 import { freezeTimeLengthAtom } from "../../state/settings";
+import { currentSessionAtom, currentSessionIdAtom } from "../../state/general";
 
 export default function TimerPage() {
 	const nextScramble = useSetAtom(scrambleAtom);
@@ -29,16 +30,20 @@ export default function TimerPage() {
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
 	const down = useRef<boolean>(false);
+	const currentSession = useAtomValue(currentSessionAtom);
+	const [ currentSessionId, setCurrentSessionId ] = useAtom(currentSessionIdAtom);
 
 	useEffect(() => {
 		setCanStart(false);
 	}, []);
 
 	const downCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
-		if ("key" in event && event.key !== " ") return;
+		if ("key" in event && event.key !== " ") {
+			if (!solving) return;
+		}
 		// 	return;
 		if (down.current === true) return;
-		down.current = true;
+		if ("key" in event && event.key === " ") down.current = true;
 		setCanStart(false);
 		if (solving) {
 			const endTime = Date.now();
@@ -55,7 +60,6 @@ export default function TimerPage() {
 	};
 	const upCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
 		if ("key" in event && event.key !== " ") return;
-
 		if (down.current === false) return;
 		down.current = false;
 		if (!canStart) {
@@ -103,6 +107,7 @@ export default function TimerPage() {
 			onTouchStart={downCallback}
 			onTouchEnd={upCallback}
 		>
+			{currentSession?.id}
 			<Stack direction="column" width="100%" height="100%">
 				<Box
 					textAlign={"center"}

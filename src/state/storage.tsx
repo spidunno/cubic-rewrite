@@ -31,6 +31,7 @@ export interface DatabaseSolve {
 export interface DbShape {
 	sessions: Session[];
 	solves: DatabaseSolve[];
+	"current-session": string;
 	"color-scheme": DefaultColorScheme | "system";
 	"freeze-time-length": number;
 }
@@ -43,6 +44,7 @@ export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 	initialData: {
 		sessions: [defaultSession],
 		solves: [],
+		"current-session": defaultSession.id,
 		"color-scheme": "system",
 		"freeze-time-length": 250
 	} as DbShape,

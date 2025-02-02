@@ -250,9 +250,9 @@ function Sidebar() {
 				<Typography
 					component={"div"}
 					sx={{
-						marginLeft: sidebarCollapsed ? "70px" : "12px",
-						transition: "margin-left 150ms ease, letter-spacing 350ms ease",
-						letterSpacing: sidebarCollapsed ? "0.5rem" : "normal",
+						marginLeft: sidebarCollapsed ? "44px" : "12px",
+						transition: "margin-left 200ms ease, letter-spacing 300ms ease",
+						letterSpacing: sidebarCollapsed ? "1rem" : "normal",
 						userSelect: "none",
 					}}
 					fontFamily={"Afacad"}
