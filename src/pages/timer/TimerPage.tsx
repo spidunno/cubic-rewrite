@@ -1,6 +1,13 @@
 import { Box, Option, Select, Skeleton, Stack, Typography } from "@mui/joy";
 import Scramble from "./Scramble";
-import { Suspense, TouchEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+	Suspense,
+	TouchEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
 	canStartAtom,
@@ -22,9 +29,12 @@ import {
 import { DatabaseSolve } from "../../state/storage";
 import { nanoid } from "nanoid";
 import { Alg } from "cubing/alg";
+import { footerOpenAtom } from "../../state/ui";
+import { useMediaQuery } from "usehooks-ts";
+import Solves from "../solves/Solves";
 
 export default function TimerPage() {
-	const [ scramble, setScramble ] = useState<Alg | null>(null);
+	const [scramble, setScramble] = useState<Alg | null>(null);
 	const nextScramble = useSetAtom(scrambleAtom);
 	const [cubeType, setCubeType] = useAtom(cubeTypeAtom);
 
@@ -41,6 +51,8 @@ export default function TimerPage() {
 	const sessions = useAtomValue(sessionsAtom);
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
 	const [solves, setSolves] = useAtom(solvesAtom);
+	const isSmallScreen = !useMediaQuery("@media (max-width: 600px)");
+	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
 	useEffect(() => {
 		setCanStart(false);
@@ -198,7 +210,7 @@ export default function TimerPage() {
 								}
 							>
 								{/* {scramble?.toString()} */}
-								<Scramble onScrambleLoaded={(s) => setScramble(s)}/>
+								<Scramble onScrambleLoaded={(s) => setScramble(s)} />
 							</Suspense>
 						</Typography>
 					</Box>
@@ -228,6 +240,18 @@ export default function TimerPage() {
 					>
 						<Timer />
 					</Box>
+				</Box>
+				<Box
+					borderTop={(theme) =>
+						`1px solid ${theme.palette.neutral.outlinedBorder}`
+					}
+					height={"500px"}
+					maxHeight="500px"
+					// minHeight={"500px"}
+					sx={{ overflowY: "auto", scrollbarGutter: "stable"}}
+					marginBottom={isSmallScreen ? (footerOpen ? "0px" : "-500px") : "0px"}
+				>
+					<Solves />
 				</Box>
 			</Stack>
 		</>

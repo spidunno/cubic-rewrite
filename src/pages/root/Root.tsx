@@ -7,20 +7,17 @@ import {
 } from "react-router";
 import {
 	Box,
-	CssBaseline,
-	CssVarsProvider,
 	IconButton,
 	Stack,
 	Tooltip,
 	Typography,
-	useColorScheme,
 } from "@mui/joy";
 import NavButton from "./NavButton";
 import { Icon } from "../../components/Icon";
 import { sidebarCollapsedAtom } from "../../state/ui";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { themeModeAtom } from "../../state/settings";
 import { useEffect } from "react";
+// import { ErrorBoundary } from "react-error-boundary";
 
 import type { MaterialSymbol } from "material-symbols";
 
@@ -32,29 +29,18 @@ import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
 import { cubeTypeAtom, scrambleAtom } from "../../state/timer";
 
-
 export default function Root() {
 	useAtomValue(_storageDb.suspendBeforeInit);
 	const nextScramble = useSetAtom(scrambleAtom);
 	const cubeType = useAtomValue(cubeTypeAtom);
 	const location = useLocation();
 	const isTransitioning = useViewTransitionState(location);
-	const ThemeUpdater = () => {
-		const [themeMode] = useAtom(themeModeAtom);
-		const { setMode } = useColorScheme();
-		useEffect(() => {
-			setMode(themeMode);
-		}, [themeMode]);
-		return null;
-	};
 	useEffect(() => {
 		nextScramble(cubeType);
 	}, [cubeType]);
 
 	return (
-		<CssVarsProvider>
-			<ThemeUpdater />
-			<CssBaseline />
+
 			<Stack direction="column" width="100%" height="100vh">
 				<Topbar />
 				<Stack direction={"row"} flex={"1"} height="100%">
@@ -68,12 +54,13 @@ export default function Root() {
 									: undefined,
 							}}
 						>
-							<Outlet />
+							{/* <ErrorBoundary fallback={<>test</>}> */}
+								<Outlet />
+							{/* </ErrorBoundary> */}
 						</div>
 					</Box>
 				</Stack>
 			</Stack>
-		</CssVarsProvider>
 	);
 }
 
@@ -84,13 +71,13 @@ function Topbar() {
 		<Box
 			sx={(theme) => ({
 				zIndex: "800",
-				position: 'relative',
+				position: "relative",
 				display: "flex",
 				flexDirection: "row",
 				alignItems: "center",
 				width: "100%",
 				height: "64px",
-				minHeight: "64px",	
+				minHeight: "64px",
 				alignContent: "center",
 				justifyContent: "space-between",
 				paddingLeft: "10px",
@@ -120,23 +107,23 @@ function Topbar() {
 				// marginRight="auto"
 				alignItems={"center"}
 			> */}
-				<QbqLogo
-					style={{
-						// position: 'absolute',
-						// left: "50%",
-						// right: "50%",
-						// marginLeft: "auto",
-						// marginRight: "",
-						alignSelf: 'center',
-						// display: "inline-block",
-						width: "40px",
-						height: "40px",
-					}}
-					height={"44px"}
-					width={"44px"}
-				/>
-				<Box width={"44px"} height={"44px"}></Box>
-				{/* <Typography
+			<QbqLogo
+				style={{
+					// position: 'absolute',
+					// left: "50%",
+					// right: "50%",
+					// marginLeft: "auto",
+					// marginRight: "",
+					alignSelf: "center",
+					// display: "inline-block",
+					width: "40px",
+					height: "40px",
+				}}
+				height={"44px"}
+				width={"44px"}
+			/>
+			<Box width={"44px"} height={"44px"}></Box>
+			{/* <Typography
 					component={"div"}
 					sx={{
 						// display: "inline-block1",
@@ -159,7 +146,8 @@ function Sidebar() {
 	const matches = {
 		"/": useMatch("/"),
 		"/settings": useMatch("/settings"),
-		"/solves": useMatch("/solves")
+		"/solves": useMatch("/solves"),
+		"/sessions": useMatch("/sessions"),
 	};
 	const [sidebarCollapsed, setSidebarCollapsed] = useAtom(sidebarCollapsedAtom);
 
@@ -224,17 +212,24 @@ function Sidebar() {
 					iconButton={sidebarCollapsed}
 				/>
 				<SidebarButton
-					icon="settings"
-					active={!!matches["/settings"]}
-					title="Settings"
-					to="/settings"
-					iconButton={sidebarCollapsed}
-				/>
-				<SidebarButton
 					icon="list_alt"
 					active={!!matches["/solves"]}
 					title="Solves"
 					to="/solves"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="view_stream"
+					active={!!matches["/sessions"]}
+					title="Sessions"
+					to="/sessions"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="settings"
+					active={!!matches["/settings"]}
+					title="Settings"
+					to="/settings"
 					iconButton={sidebarCollapsed}
 				/>
 			</Stack>

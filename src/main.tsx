@@ -1,34 +1,57 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider, } from "react-router"; 
-import Main from "./pages/timer/TimerPage";
+import TimerPage from "./pages/timer/TimerPage";
 import "./index.css";
 import Root from "./pages/root/Root";
-import Settings from "./pages/settings/Settings";
+import { settingsRoute } from "./pages/settings/Settings";
 import Solves from "./pages/solves/Solves";
-const router = createBrowserRouter([
+import Sessions from "./pages/sessions/Sessions";
+// import { ErrorBoundary } from "./pages/error/ErrorBoundary";
+import { CssBaseline, CssVarsProvider, useColorScheme } from "@mui/joy";
+import { useAtomValue } from "jotai";
+import { themeModeAtom } from "./state/settings";
+
+export const router = createBrowserRouter([
 	{
 		path: "/",
+		
 		element: <Root/>,
+		//// @ts-expect-error
+		// ErrorBoundary,
+		// errorElement: <ErrorElement/>,
 		children: [
 			{
 				index: true,
-				element: <Main/>
+				element: <TimerPage/>
 			},
-			{
-				path: "settings",
-				element: <Settings/>
-			},
+			settingsRoute,
 			{
 				path: "solves",
 				element: <Solves/>
+			},
+			{
+				path: "sessions",
+				element: <Sessions/>
 			}
 		]
 	}
 ], {basename: import.meta.env.BASE_URL});
 
+const ThemeUpdater = () => {
+	const themeMode = useAtomValue(themeModeAtom);
+	const { setMode } = useColorScheme();
+	useEffect(() => {
+		setMode(themeMode);
+	}, [themeMode]);
+	return null;
+};
+
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
+				<CssVarsProvider>
+			<ThemeUpdater />
+			<CssBaseline />
 		<RouterProvider router={router}/>
 		{/* <BrowserRouter>
 			<Routes>
@@ -38,5 +61,6 @@ createRoot(document.getElementById("root")!).render(
 				</Route>
 			</Routes>
 		</BrowserRouter> */}
+		</CssVarsProvider>
 	</StrictMode>
 );

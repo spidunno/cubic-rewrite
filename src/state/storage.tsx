@@ -37,6 +37,7 @@ export interface DbShape {
 	"current-session": string;
 	"color-scheme": DefaultColorScheme | "system";
 	"freeze-time-length": number;
+	"ask-before-delete": boolean;
 }
 
 const defaultSession = createSession("My Session", Date.now(), "default");
@@ -49,7 +50,8 @@ export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 		solves: [],
 		"current-session": defaultSession.id,
 		"color-scheme": "system",
-		"freeze-time-length": defaultFreezeTimeLength
+		"freeze-time-length": defaultFreezeTimeLength,
+		"ask-before-delete": true
 	} as DbShape,
 });
 

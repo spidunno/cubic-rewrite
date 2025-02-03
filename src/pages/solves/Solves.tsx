@@ -6,6 +6,7 @@ import {
 	DialogTitle,
 	Divider,
 	IconButton,
+	Link,
 	Modal,
 	ModalDialog,
 	Sheet,
@@ -14,11 +15,13 @@ import {
 	Typography,
 } from "@mui/joy";
 import { solvesAtom } from "../../state/general";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { DatabaseSolve } from "../../state/storage";
 import { formatTime } from "../../util/timeFormatting";
 import { Icon } from "../../components/Icon";
 import { useState } from "react";
+import { askBeforeDeleteAtom } from "../../state/settings";
+import { Link as RouterLink } from "react-router";
 
 export default function Solves() {
 	const [solves] = useAtom(solvesAtom);
@@ -38,7 +41,12 @@ export default function Solves() {
 						})
 						.reverse()
 						.map((v, i, _a) => (
-							<SolveDisplay index={i} solvesArrIndex={v[0]} solve={v[1]} key={v[1].id} />
+							<SolveDisplay
+								index={i}
+								solvesArrIndex={v[0]}
+								solve={v[1]}
+								key={v[1].id}
+							/>
 						))}
 				</tbody>
 			</Table>
@@ -49,7 +57,7 @@ export default function Solves() {
 function SolveDisplay({
 	solve,
 	index,
-	solvesArrIndex
+	solvesArrIndex,
 }: {
 	solve: DatabaseSolve;
 	index: number;
@@ -57,6 +65,7 @@ function SolveDisplay({
 }) {
 	const [solves, setSolves] = useAtom(solvesAtom);
 	const [deleteOpen, setDeleteOpen] = useState(false);
+	const askBeforeDelete = useAtomValue(askBeforeDeleteAtom);
 
 	return (
 		<tr>
@@ -67,13 +76,14 @@ function SolveDisplay({
 				</Typography>
 				<Typography
 					display="inline"
+					fontWeight={"bold"}
 					sx={(theme) => ({
 						marginLeft: "16px",
 						color: solve.dnf
-							? theme.palette.danger.plainColor
+							? `rgba(${theme.palette.danger.mainChannel} / 1)`
 							: solve.plusTwo
-							? theme.palette.warning.plainColor
-							: theme.palette.success.outlinedColor,
+							? `rgba(${theme.palette.warning.mainChannel} / 1)`
+							: `rgba(${theme.palette.success.mainChannel} / 1)`,
 					})}
 				>
 					{solve.dnf ? "DNF" : formatTime(solve.time)}
@@ -90,10 +100,14 @@ function SolveDisplay({
 								...solves[solvesArrIndex],
 								plusTwo: !solves[solvesArrIndex].plusTwo,
 								time:
-									solves[solvesArrIndex].rawTime + (!solves[solvesArrIndex].plusTwo ? 2000 : 0),
+									solves[solvesArrIndex].rawTime +
+									(!solves[solvesArrIndex].plusTwo ? 2000 : 0),
 							};
 							setSolves([...solves]);
 						}}
+						sx={theme => ({
+							color: solve.plusTwo ? `rgba(${theme.palette.warning.mainChannel} / 1)` : undefined
+						})}
 						color={solve.plusTwo ? "warning" : "neutral"}
 						variant="plain"
 					>
@@ -108,13 +122,20 @@ function SolveDisplay({
 							setSolves([...solves]);
 						}}
 						color={solve.dnf ? "danger" : "neutral"}
+						sx={theme => ({
+							color: solve.dnf ? `rgba(${theme.palette.danger.mainChannel} / 1)` : undefined
+						})}
 						variant="plain"
 					>
 						DNF
 					</Button>
 					<IconButton
 						onClick={() => {
-							setDeleteOpen(true);
+							if (askBeforeDelete) {
+								setDeleteOpen(true);
+							} else {
+								setSolves([...solves].filter((_v, i) => i !== solvesArrIndex));
+							}
 						}}
 						color="danger"
 						variant="soft"
@@ -130,19 +151,38 @@ function SolveDisplay({
 				}}
 			>
 				<ModalDialog variant="outlined" role="alertdialog">
-					<DialogTitle>Delete this solve?</DialogTitle>
-					<Divider/>
-					<DialogContent>Are you sure you want to delete this solve? This action is irreversible!</DialogContent>
+					<DialogTitle sx={{display: "block"}}>
+						Delete this solve?
+						{/* <br/> */}
+						<Typography level="body-xs">
+							<Link to="/settings/other#ask-before-delete" underline="always" color="neutral" component={RouterLink}>
+								Don't want this? You can disable this popup here.
+							</Link>
+						</Typography>
+					</DialogTitle>
+					<Divider />
+					<DialogContent>
+						Are you sure you want to delete this solve? This action is
+						irreversible!
+					</DialogContent>
 					<DialogActions>
-					<Button variant="solid" color="danger" onClick={() => {
-						setSolves([...solves].filter((_v, i) => i !== solvesArrIndex));
-						setDeleteOpen(false);
-					}}>
-						Delete solve
-					</Button>
-					<Button variant="plain" color="neutral" onClick={() => setDeleteOpen(false)}>
-						Cancel
-					</Button>
+						<Button
+							variant="solid"
+							color="danger"
+							onClick={() => {
+								setSolves([...solves].filter((_v, i) => i !== solvesArrIndex));
+								setDeleteOpen(false);
+							}}
+						>
+							Delete solve
+						</Button>
+						<Button
+							variant="plain"
+							color="neutral"
+							onClick={() => setDeleteOpen(false)}
+						>
+							Cancel
+						</Button>
 					</DialogActions>
 				</ModalDialog>
 			</Modal>

@@ -22,7 +22,7 @@ export function Icon(props: IconProps) {
 					filled ? "1" : "0"
 				}, 'wght' 400, 'GRAD' 0`,
 				fontOpticalSizing: 'auto',
-				transition: "font-variation-settings 75ms linear",
+				transition: "font-variation-settings 75ms ease-out",
 				...sx,
 			}}
 			className={`material-symbols-${variant || "rounded"}`}
