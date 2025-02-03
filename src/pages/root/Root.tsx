@@ -308,7 +308,7 @@ function MobileSidebar() {
 					marginLeft: sidebarCollapsed ? "-240px" : "0",
 					height: `calc(100% - 64px)`,
 				},
-				viewTransitionName: "sidebar",
+				viewTransitionName: "mobile-sidebar",
 
 				width: sidebarCollapsed ? "96px" : "240px",
 				transition: "width 150ms ease, margin-left 150ms ease",
@@ -437,4 +437,4 @@ function SidebarButton(props: {
 	);
 }
 
-const mobileSidebarCollapsedAtom = atom(true);
+export const mobileSidebarCollapsedAtom = atom(true);

@@ -1,4 +1,12 @@
-import { Box, Option, Select, Skeleton, Stack, Typography } from "@mui/joy";
+import {
+	Box,
+	Link,
+	Option,
+	Select,
+	Skeleton,
+	Stack,
+	Typography,
+} from "@mui/joy";
 import Scramble from "./Scramble";
 import {
 	Suspense,
@@ -51,7 +59,7 @@ export default function TimerPage() {
 	const sessions = useAtomValue(sessionsAtom);
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
 	const [solves, setSolves] = useAtom(solvesAtom);
-	const isSmallScreen = !useMediaQuery("@media (max-width: 600px)");
+	const isSmallScreen = useMediaQuery("(max-width: 600px)");
 	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
 	useEffect(() => {
@@ -241,18 +249,43 @@ export default function TimerPage() {
 						<Timer />
 					</Box>
 				</Box>
-				<Box
-					borderTop={(theme) =>
-						`1px solid ${theme.palette.neutral.outlinedBorder}`
-					}
-					height={"500px"}
-					maxHeight="500px"
-					// minHeight={"500px"}
-					sx={{ overflowY: "auto", scrollbarGutter: "stable"}}
+				<Stack
 					marginBottom={isSmallScreen ? (footerOpen ? "0px" : "-500px") : "0px"}
+					direction={"column"}
+					position={"relative"}
+					height={"350px"}
+					maxHeight="350px"
+					gap={"0"}
 				>
-					<Solves />
-				</Box>
+					<Link
+						onClick={() => _setFooterOpen(!footerOpen)}
+						color="neutral"
+						sx={{
+							display: "none",
+							"@media (max-width: 600px)": {
+								display: "inline",
+							},
+							position: "absolute",
+							zIndex: 300,
+							top: "-2em",
+							right: "12px",
+						}}
+					>
+						{footerOpen ? "Hide Footer" : "Show Footer"}
+					</Link>
+
+					<Box
+						borderTop={(theme) =>
+							`1px solid ${theme.palette.neutral.outlinedBorder}`
+						}
+						height={"350px"}
+						maxHeight="350px"
+						// minHeight={"500px"}
+						sx={{ overflowY: "auto", scrollbarGutter: "stable" }}
+					>
+						<Solves />
+					</Box>
+				</Stack>
 			</Stack>
 		</>
 	);
