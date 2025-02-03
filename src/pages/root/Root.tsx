@@ -19,11 +19,11 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 // import { ErrorBoundary } from "react-error-boundary";
 
-import type { MaterialSymbol } from "material-symbols";
+import type { MaterialSymbol } from "../assets/material-symbols";
 
-import "@fontsource/inter/index.css";
-import "@fontsource/afacad/index.css";
-import "@fontsource/azeret-mono/index.css";
+import "../../assets/fonts/inter/index.css";
+import "../../assets/fonts/afacad/index.css";
+import "../../assets/fonts/azeret-mono/index.css";
 
 import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
