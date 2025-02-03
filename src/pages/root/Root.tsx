@@ -77,6 +77,7 @@ function Topbar() {
 	return (
 		<Box
 			sx={(theme) => ({
+				zIndex: "800",
 				position: 'relative',
 				display: "flex",
 				flexDirection: "row",
@@ -158,6 +159,7 @@ function Sidebar() {
 	return (
 		<Stack
 			sx={(theme) => ({
+				zIndex: "800",
 				overflow: "hidden",
 				backgroundColor: theme.palette.background.body,
 				"@media (max-width: 600px)": {

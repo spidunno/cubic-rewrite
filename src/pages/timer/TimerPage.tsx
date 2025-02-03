@@ -1,4 +1,11 @@
-import { Box, Option, Select, Skeleton, Stack, Typography } from "@mui/joy";
+import {
+	Box,
+	Option,
+	Select,
+	Skeleton,
+	Stack,
+	Typography,
+} from "@mui/joy";
 import Scramble from "./Scramble";
 import { Suspense, TouchEvent, useEffect, useRef } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -11,7 +18,7 @@ import {
 	spaceTimerStartedAtom,
 	timeStartedAtAtom,
 } from "../../state/timer";
-import {  allEvents, placeholderScrambles } from "../../util/cube";
+import { allEvents, placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
 import { freezeTimeLengthAtom } from "../../state/settings";
 import { currentSessionIdAtom, sessionsAtom } from "../../state/general";
@@ -98,89 +105,137 @@ export default function TimerPage() {
 	}, [cubeType]);
 
 	return (
-		<Box
-			onContextMenu={(event) => {
-				event.preventDefault();
-			}}
-			sx={{ width: "100%", height: "100%", display: 'flex', flexDirection: "column" }}
-			onTouchStart={downCallback}
-			onTouchEnd={upCallback}
-		>
-			<Stack direction={"row"} gap={"12px"} marginLeft={"12px"} marginTop="12px">
-				<Select
-					value={cubeType}
-					onChange={(_event, cube_type) => {
-						setCubeType(cube_type || "333");
-					}}
+		<>
+			{/* <GlobalStyles
+				styles={{
+					":root": {
+						filter: solving ? "brightness(75%)" : "brightness(100%)",
+						transition: "filter 250ms ease",
+					},
+				}}
+			/> */}
+			<Box
+				onContextMenu={(event) => {
+					event.preventDefault();
+				}}
+				sx={{
+					width: "100%",
+					height: "100%",
+					display: "flex",
+					flexDirection: "column",
+				}}
+				onTouchStart={downCallback}
+				onTouchEnd={upCallback}
+			>
+				<Stack
+					direction={"row"}
+					gap={"12px"}
+					marginLeft={"12px"}
+					marginTop="12px"
 				>
-					{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
-						return (
-							<Option value={event_id} key={event_id}>
-								{event_obj.eventName}
-							</Option>
-						);
-					})}
-				</Select>
-				<Select
-					value={currentSessionId}
-					onChange={(_event, session_id) => {
-						if (typeof session_id === "string") setCurrentSessionId(session_id);
-					}}
-				>
-					{Object.entries(sessions).map(([session_id, session_obj], _i) => {
-						return (
-							<Option value={session_id} key={session_id}>
-								{session_obj?.name}
-							</Option>
-						);
-					})}
-				</Select>
-			</Stack>
-			<Stack direction="column" width="100%" height="100%">
-				<Box
-					textAlign={"center"}
-					sx={{
-						marginTop: "auto",
-						// marginBottom: "15%",
-						width: "100%",
-						justifyItems: "center",
-					}}
-				>
-					<Typography
-						marginLeft={"auto"}
-						marginRight={"auto"}
-						level="body-md"
-						maxWidth={"450px"}
-						textAlign={"justify"}
-						sx={{ textAlignLast: "center" }}
+					<Select
+						value={cubeType}
+						onChange={(_event, cube_type) => {
+							setCubeType(cube_type || "333");
+						}}
 					>
-						<Suspense
-							fallback={
-								<Skeleton animation={"wave"} variant="inline">
-									{placeholderScrambles[cubeType]}
-								</Skeleton>
-							}
+						{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
+							return (
+								<Option value={event_id} key={event_id}>
+									{event_obj.eventName}
+								</Option>
+							);
+						})}
+					</Select>
+					<Select
+						value={currentSessionId}
+						onChange={(_event, session_id) => {
+							if (typeof session_id === "string")
+								setCurrentSessionId(session_id);
+						}}
+					>
+						{Object.entries(sessions).map(([session_id, session_obj], _i) => {
+							return (
+								<Option value={session_id} key={session_id}>
+									{session_obj?.name}
+								</Option>
+							);
+						})}
+					</Select>
+				</Stack>
+				<Stack direction="column" width="100%" height="100%">
+					<Box
+						flex={"1"}
+						textAlign={"center"}
+						sx={{
+							alignContent: "end",
+							// marginTop: "25%",
+							// marginBottom: "15%",
+							width: "100%",
+							justifyItems: "center",
+						}}
+					>
+						<Typography
+							marginLeft={"auto"}
+							marginRight={"auto"}
+							level="body-md"
+							maxWidth={"500px"}
+							textAlign={"justify"}
+							sx={{ textAlignLast: "center" }}
 						>
-							<Scramble />
-						</Suspense>
-					</Typography>
-				</Box>
-				<Box
-					textAlign={"center"}
-					// flex="1"
-					sx={{
-						width: "100%",
-						marginBottom: "auto",
-						containerType: "inline-size",
-						containerName: "timer-text-container",
-					}}
-				>
-					<Timer />
-				</Box>
-				{/* <svg viewBox="auto,auto,auto,auto">
+							<Suspense
+								fallback={
+									<Skeleton animation={"wave"} variant="inline">
+										{placeholderScrambles[cubeType]}
+									</Skeleton>
+								}
+							>
+								<Scramble />
+							</Suspense>
+						</Typography>
+					</Box>
+					<Box sx={(theme) => ({
+						width: "100vw",
+						height: "100vh",
+						position: "fixed",
+						pointerEvents: solving ? "all" : "none",
+						background: theme.palette.background.popup,
+						opacity: solving ? 0.60 : 0,
+						transition: "opacity 200ms ease"
+						// background: "red"
+					})}/>
+					{/* createPortal(<div style={{pointerEvents: "none", width: "100vw", height: "100vh", zIndex: "-1", background: "#ff000088", position: "fixed", marginTop: "-100vh"}}></div>, document.body)} */}
+					<Box
+						flex="1"
+						textAlign={"center"}
+						// flex="1"
+						sx={{
+							position: "relative",
+							zIndex: "99",
+							// "::backdrop": {
+							// 	width: "100vw",
+							// 	height: "100vh",
+							// 	background: "red",
+							// 	position: "absolute",
+							// 	top: "0",
+							// 	left: "0"
+							// },
+							transition: "filter 250ms ease",
+							width: "100%",
+							flexBasis: "calc(min(25cqw, 96px)*2)",
+							// height: "100%",
+							// marginBottom: "auto",
+							containerType: "inline-size",
+							containerName: "timer-text-container",
+						}}
+					>
+						<Timer />
+					</Box>
+					{/* <svg viewBox="auto,auto,auto,auto">
 					<text fill="white" textAnchor="start" alignmentBaseline="text-before-edge" x="0" y="0">Fit Me</text>
 				</svg> */}
-			</Stack>
-		</Box>
+				</Stack>
+			</Box>
+		</>
 	);
 }
