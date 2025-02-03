@@ -18,7 +18,7 @@ import {
 import NavButton from "./NavButton";
 import { Icon } from "../../components/Icon";
 import { sidebarCollapsedAtom } from "../../state/ui";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { themeModeAtom } from "../../state/settings";
 import { useEffect } from "react";
 
@@ -30,10 +30,13 @@ import "@fontsource/azeret-mono/index.css";
 
 import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
+import { cubeTypeAtom, scrambleAtom } from "../../state/timer";
 
 
 export default function Root() {
 	useAtomValue(_storageDb.suspendBeforeInit);
+	const nextScramble = useSetAtom(scrambleAtom);
+	const cubeType = useAtomValue(cubeTypeAtom);
 	const location = useLocation();
 	const isTransitioning = useViewTransitionState(location);
 	const ThemeUpdater = () => {
@@ -44,6 +47,9 @@ export default function Root() {
 		}, [themeMode]);
 		return null;
 	};
+	useEffect(() => {
+		nextScramble(cubeType);
+	}, [cubeType]);
 
 	return (
 		<CssVarsProvider>

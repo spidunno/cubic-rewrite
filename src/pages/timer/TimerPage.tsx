@@ -100,9 +100,9 @@ export default function TimerPage() {
 	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted]);
 	// const setCurrentSolve = useSetAtom(currentSolveAtom);
 
-	useEffect(() => {
-		nextScramble(cubeType);
-	}, [cubeType]);
+	// useEffect(() => {
+	// 	nextScramble(cubeType);
+	// }, [cubeType]);
 
 	return (
 		<>
@@ -163,7 +163,7 @@ export default function TimerPage() {
 						})}
 					</Select>
 				</Stack>
-				<Stack direction="column" width="100%" height="100%">
+				{/* <Stack direction="column" width="100%" height="100%"> */}
 					<Box
 						flex={"1"}
 						textAlign={"center"}
@@ -234,7 +234,7 @@ export default function TimerPage() {
 					{/* <svg viewBox="auto,auto,auto,auto">
 					<text fill="white" textAnchor="start" alignmentBaseline="text-before-edge" x="0" y="0">Fit Me</text>
 				</svg> */}
-				</Stack>
+				{/* </Stack> */}
 			</Box>
 		</>
 	);
