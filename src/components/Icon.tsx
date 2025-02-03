@@ -1,7 +1,7 @@
 import { PropsOf } from "@emotion/react";
 import { styled } from "@mui/joy";
-import "../assets/material-symbols";
-import { MaterialSymbol } from "../assets/material-symbols";
+import "../assets/material-symbols/index.css";
+import type { MaterialSymbol } from "../assets/material-symbols/index.d.ts";
 
 export const IconSpan = styled("span")(() => ({color: "var(--Icon-color)", margin: "var(--Icon-margin)", fontSize: "var(--Icon-fontSize, 20px)", width: "1em", height: "1em"}));
 
