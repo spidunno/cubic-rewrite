@@ -1,13 +1,6 @@
-import {
-	Box,
-	Option,
-	Select,
-	Skeleton,
-	Stack,
-	Typography,
-} from "@mui/joy";
+import { Box, Option, Select, Skeleton, Stack, Typography } from "@mui/joy";
 import Scramble from "./Scramble";
-import { Suspense, TouchEvent, useEffect, useRef } from "react";
+import { Suspense, TouchEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
 	canStartAtom,
@@ -21,9 +14,17 @@ import {
 import { allEvents, placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
 import { freezeTimeLengthAtom } from "../../state/settings";
-import { currentSessionIdAtom, sessionsAtom } from "../../state/general";
+import {
+	currentSessionIdAtom,
+	sessionsAtom,
+	solvesAtom,
+} from "../../state/general";
+import { DatabaseSolve } from "../../state/storage";
+import { nanoid } from "nanoid";
+import { Alg } from "cubing/alg";
 
 export default function TimerPage() {
+	const [ scramble, setScramble ] = useState<Alg | null>(null);
 	const nextScramble = useSetAtom(scrambleAtom);
 	const [cubeType, setCubeType] = useAtom(cubeTypeAtom);
 
@@ -39,25 +40,52 @@ export default function TimerPage() {
 	const down = useRef<boolean>(false);
 	const sessions = useAtomValue(sessionsAtom);
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
+	const [solves, setSolves] = useAtom(solvesAtom);
 
 	useEffect(() => {
 		setCanStart(false);
 	}, []);
 
+	const startSolve = useCallback(() => {
+		setFinalTime(0);
+		const startTime = new Date();
+		setTimeStartedAt(startTime);
+		setSolving(true);
+		setCanStart(false);
+	}, []);
+	const endSolve = useCallback(() => {
+		const endTime = Date.now();
+		const endScramble = scramble?.toString();
+		const duration = endTime - (timeStartedAt?.valueOf() || 0);
+		const solve: DatabaseSolve = {
+			cube_type: cubeType,
+			dnf: false,
+			createdAt: timeStartedAt?.valueOf() || 0,
+			endedAt: endTime,
+			id: nanoid(),
+			plusTwo: false,
+			rawTime: duration,
+			scramble: endScramble?.toString() || "",
+			sessionId: currentSessionId,
+			time: duration,
+		};
+		setSolves([solve, ...solves]);
+
+		setFinalTime(duration);
+		setSolving(false);
+		setTimeStartedAt(null);
+		nextScramble(cubeType);
+	}, [timeStartedAt, cubeType]);
+
 	const downCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
 		if ("key" in event && event.key !== " ") {
 			if (!solving) return;
 		}
-		// 	return;
 		if (down.current === true) return;
 		if ("key" in event && event.key === " ") down.current = true;
 		setCanStart(false);
 		if (solving) {
-			const endTime = Date.now();
-			setFinalTime(endTime - (timeStartedAt?.valueOf() || 0));
-			setSolving(false);
-			setTimeStartedAt(null);
-			nextScramble(cubeType);
+			endSolve();
 		} else {
 			setSpaceTimerStarted(Date.now());
 			timeoutRef.current = setTimeout(() => {
@@ -72,11 +100,7 @@ export default function TimerPage() {
 		if (!canStart) {
 			clearTimeout(timeoutRef.current);
 		} else {
-			setFinalTime(0);
-			const startTime = new Date();
-			setTimeStartedAt(startTime);
-			setSolving(true);
-			setCanStart(false);
+			startSolve();
 		}
 		setSpaceTimerStarted(0);
 	};
@@ -85,92 +109,75 @@ export default function TimerPage() {
 		document.addEventListener("keydown", downCallback);
 		document.addEventListener("keyup", upCallback);
 
-		// document.addEventListener("touchstart", downCallback);
-		// document.addEventListener("touchend", upCallback);
-
-		// document.addEventListener("contextmenu", contextMenuCallback);
-
 		return () => {
 			document.removeEventListener("keydown", downCallback);
 			document.removeEventListener("keyup", upCallback);
-
-			// document.removeEventListener("touchstart", downCallback);
-			// document.removeEventListener("touchend", upCallback);
 		};
 	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted]);
-	// const setCurrentSolve = useSetAtom(currentSolveAtom);
-
-	// useEffect(() => {
-	// 	nextScramble(cubeType);
-	// }, [cubeType]);
 
 	return (
 		<>
-			{/* <GlobalStyles
-				styles={{
-					":root": {
-						filter: solving ? "brightness(75%)" : "brightness(100%)",
-						transition: "filter 250ms ease",
-					},
-				}}
-			/> */}
-			<Box
-				onContextMenu={(event) => {
-					event.preventDefault();
-				}}
+			<Stack
 				sx={{
 					width: "100%",
 					height: "100%",
-					display: "flex",
-					flexDirection: "column",
 				}}
-				onTouchStart={downCallback}
-				onTouchEnd={upCallback}
+				direction={"column"}
 			>
-				<Stack
-					direction={"row"}
-					gap={"12px"}
-					marginLeft={"12px"}
-					marginTop="12px"
+				<Box
+					onContextMenu={(event) => {
+						event.preventDefault();
+					}}
+					sx={{
+						width: "100%",
+						height: "100%",
+						display: "flex",
+						flexDirection: "column",
+					}}
+					onTouchStart={downCallback}
+					onTouchEnd={upCallback}
 				>
-					<Select
-						value={cubeType}
-						onChange={(_event, cube_type) => {
-							setCubeType(cube_type || "333");
-						}}
+					<Stack
+						direction={"row"}
+						gap={"12px"}
+						marginLeft={"12px"}
+						marginTop="12px"
 					>
-						{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
-							return (
-								<Option value={event_id} key={event_id}>
-									{event_obj.eventName}
-								</Option>
-							);
-						})}
-					</Select>
-					<Select
-						value={currentSessionId}
-						onChange={(_event, session_id) => {
-							if (typeof session_id === "string")
-								setCurrentSessionId(session_id);
-						}}
-					>
-						{Object.entries(sessions).map(([session_id, session_obj], _i) => {
-							return (
-								<Option value={session_id} key={session_id}>
-									{session_obj?.name}
-								</Option>
-							);
-						})}
-					</Select>
-				</Stack>
-				{/* <Stack direction="column" width="100%" height="100%"> */}
+						<Select
+							value={cubeType}
+							onChange={(_event, cube_type) => {
+								setCubeType(cube_type || "333");
+							}}
+						>
+							{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
+								return (
+									<Option value={event_id} key={event_id}>
+										{event_obj.eventName}
+									</Option>
+								);
+							})}
+						</Select>
+						<Select
+							value={currentSessionId}
+							onChange={(_event, session_id) => {
+								if (typeof session_id === "string")
+									setCurrentSessionId(session_id);
+							}}
+						>
+							{Object.entries(sessions).map(([session_id, session_obj], _i) => {
+								return (
+									<Option value={session_id} key={session_id}>
+										{session_obj?.name}
+									</Option>
+								);
+							})}
+						</Select>
+					</Stack>
 					<Box
 						flex={"1"}
 						textAlign={"center"}
 						sx={{
 							alignContent: "end",
-							// marginTop: "25%",
-							// marginBottom: "15%",
 							width: "100%",
 							justifyItems: "center",
 						}}
@@ -190,52 +197,39 @@ export default function TimerPage() {
 									</Skeleton>
 								}
 							>
-								<Scramble />
+								{/* {scramble?.toString()} */}
+								<Scramble onScrambleLoaded={(s) => setScramble(s)}/>
 							</Suspense>
 						</Typography>
 					</Box>
-					<Box sx={(theme) => ({
-						width: "100vw",
-						height: "100vh",
-						position: "fixed",
-						pointerEvents: solving ? "all" : "none",
-						background: theme.palette.background.popup,
-						opacity: solving ? 0.60 : 0,
-						transition: "opacity 200ms ease"
-						// background: "red"
-					})}/>
-					{/* createPortal(<div style={{pointerEvents: "none", width: "100vw", height: "100vh", zIndex: "-1", background: "#ff000088", position: "fixed", marginTop: "-100vh"}}></div>, document.body)} */}
+					<Box
+						sx={(theme) => ({
+							width: "100%",
+							height: "100%",
+							position: "fixed",
+							pointerEvents: solving ? "all" : "none",
+							background: theme.palette.background.popup,
+							opacity: solving ? 0.6 : 0,
+							transition: "opacity 200ms ease",
+						})}
+					/>
 					<Box
 						flex="1"
 						textAlign={"center"}
-						// flex="1"
 						sx={{
 							position: "relative",
 							zIndex: "99",
-							// "::backdrop": {
-							// 	width: "100vw",
-							// 	height: "100vh",
-							// 	background: "red",
-							// 	position: "absolute",
-							// 	top: "0",
-							// 	left: "0"
-							// },
 							transition: "filter 250ms ease",
 							width: "100%",
 							flexBasis: "calc(min(25cqw, 96px)*2)",
-							// height: "100%",
-							// marginBottom: "auto",
 							containerType: "inline-size",
 							containerName: "timer-text-container",
 						}}
 					>
 						<Timer />
 					</Box>
-					{/* <svg viewBox="auto,auto,auto,auto">
-					<text fill="white" textAnchor="start" alignmentBaseline="text-before-edge" x="0" y="0">Fit Me</text>
-				</svg> */}
-				{/* </Stack> */}
-			</Box>
+				</Box>
+			</Stack>
 		</>
 	);
 }

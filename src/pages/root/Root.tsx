@@ -159,6 +159,7 @@ function Sidebar() {
 	const matches = {
 		"/": useMatch("/"),
 		"/settings": useMatch("/settings"),
+		"/solves": useMatch("/solves")
 	};
 	const [sidebarCollapsed, setSidebarCollapsed] = useAtom(sidebarCollapsedAtom);
 
@@ -227,6 +228,13 @@ function Sidebar() {
 					active={!!matches["/settings"]}
 					title="Settings"
 					to="/settings"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="list_alt"
+					active={!!matches["/solves"]}
+					title="Solves"
+					to="/solves"
 					iconButton={sidebarCollapsed}
 				/>
 			</Stack>

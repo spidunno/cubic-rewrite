@@ -5,7 +5,7 @@ import Main from "./pages/timer/TimerPage";
 import "./index.css";
 import Root from "./pages/root/Root";
 import Settings from "./pages/settings/Settings";
-
+import Solves from "./pages/solves/Solves";
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -18,6 +18,10 @@ const router = createBrowserRouter([
 			{
 				path: "settings",
 				element: <Settings/>
+			},
+			{
+				path: "solves",
+				element: <Solves/>
 			}
 		]
 	}

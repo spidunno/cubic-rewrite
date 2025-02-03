@@ -30,7 +30,7 @@ export default function Settings() {
 		<Box sx={{ width: "100%", height: "100%" }}>
 			<Tabs
 				sx={{
-					// backgroundColor: "transparent",
+					backgroundColor: "transparent",
 					// minHeight: "100%",
 					height: "100%",
 					maxHeight: "100%",

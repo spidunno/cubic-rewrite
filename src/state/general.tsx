@@ -15,3 +15,4 @@ export const currentSessionAtom = atom<Session | null, [Session], void>((get) =>
 	set(sessionsAtom, {...sessions});
 	// set(currentSessionIdAtom, get(currentSessionIdAtom))
 })
+export const solvesAtom = storageDb("solves");
