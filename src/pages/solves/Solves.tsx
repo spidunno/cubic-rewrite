@@ -29,7 +29,7 @@ export default function Solves() {
 	return (
 		<Box width={"100%"} height={"100%"} alignContent={solves.length === 0 ? "center" : "start"}>
 			{solves.length === 0 ? (
-				<Typography justifySelf={"center"} color="neutral">Nothing here yet...</Typography>
+				<Typography justifySelf={"center"} color="neutral" sx={{userSelect: "none"}}>Nothing here yet...</Typography>
 			) : (
 				<Table>
 					{/* <thead>
