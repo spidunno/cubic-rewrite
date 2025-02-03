@@ -10,7 +10,7 @@ import {
 import Scramble from "./Scramble";
 import {
 	Suspense,
-	TouchEvent,
+	TouchEvent as ReactTouchEvent,
 	useCallback,
 	useEffect,
 	useRef,
@@ -97,12 +97,13 @@ export default function TimerPage() {
 		nextScramble(cubeType);
 	}, [timeStartedAt, cubeType]);
 
-	const downCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
+	const downCallback = (event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>) => {
+		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
 		if ("key" in event && event.key !== " ") {
 			if (!solving) return;
 		}
 		if (down.current === true) return;
-		if ("key" in event && event.key === " ") down.current = true;
+		down.current = true;
 		setCanStart(false);
 		if (solving) {
 			endSolve();
@@ -113,7 +114,8 @@ export default function TimerPage() {
 			}, freezeTimeLength);
 		}
 	};
-	const upCallback = (event: KeyboardEvent | TouchEvent<HTMLDivElement>) => {
+	const upCallback = (event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>) => {
+		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
 		if ("key" in event && event.key !== " ") return;
 		if (down.current === false) return;
 		down.current = false;
@@ -149,105 +151,114 @@ export default function TimerPage() {
 						event.preventDefault();
 					}}
 					sx={{
+						userSelect: "none",
 						width: "100%",
 						height: "100%",
 						display: "flex",
 						flexDirection: "column",
 					}}
-					onTouchStart={downCallback}
-					onTouchEnd={upCallback}
 				>
-					<Stack
-						direction={"row"}
-						gap={"12px"}
-						marginLeft={"12px"}
-						marginTop="12px"
-					>
-						<Select
-							value={cubeType}
-							onChange={(_event, cube_type) => {
-								setCubeType(cube_type || "333");
-							}}
+					<Box sx={{
+						width: "100%",
+						height: "100%",
+						display: "flex",
+						flexDirection: "column",
+					}} onTouchStart={downCallback} onTouchEnd={upCallback}>
+						<Stack
+						onTouchStart={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()}
+							direction={"row"}
+							gap={"12px"}
+							marginLeft={"12px"}
+							marginTop="12px"
 						>
-							{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
-								return (
-									<Option value={event_id} key={event_id}>
-										{event_obj.eventName}
-									</Option>
-								);
-							})}
-						</Select>
-						<Select
-							value={currentSessionId}
-							onChange={(_event, session_id) => {
-								if (typeof session_id === "string")
-									setCurrentSessionId(session_id);
-							}}
-						>
-							{Object.entries(sessions).map(([session_id, session_obj], _i) => {
-								return (
-									<Option value={session_id} key={session_id}>
-										{session_obj?.name}
-									</Option>
-								);
-							})}
-						</Select>
-					</Stack>
-					<Box
-						flex={"1"}
-						textAlign={"center"}
-						sx={{
-							alignContent: "end",
-							width: "100%",
-							justifyItems: "center",
-						}}
-					>
-						<Typography
-							marginLeft={"auto"}
-							marginRight={"auto"}
-							level="body-md"
-							maxWidth={"500px"}
-							textAlign={"justify"}
-							sx={{ textAlignLast: "center" }}
-						>
-							<Suspense
-								fallback={
-									<Skeleton animation={"wave"} variant="inline">
-										{placeholderScrambles[cubeType]}
-									</Skeleton>
-								}
+							<Select
+								value={cubeType}
+								onChange={(_event, cube_type) => {
+									setCubeType(cube_type || "333");
+								}}
 							>
-								{/* {scramble?.toString()} */}
-								<Scramble onScrambleLoaded={(s) => setScramble(s)} />
-							</Suspense>
-						</Typography>
-					</Box>
-					<Box
-						sx={(theme) => ({
-							zIndex: "100",
-							width: "100%",
-							height: "100%",
-							position: "fixed",
-							pointerEvents: solving ? "all" : "none",
-							background: theme.palette.background.popup,
-							opacity: solving ? 0.6 : 0,
-							transition: "opacity 200ms ease",
-						})}
-					/>
-					<Box
-						flex="1"
-						textAlign={"center"}
-						sx={{
-							position: "relative",
-							zIndex: "101",
-							transition: "filter 250ms ease",
-							width: "100%",
-							flexBasis: "calc(min(25cqw, 96px)*2)",
-							containerType: "inline-size",
-							containerName: "timer-text-container",
-						}}
-					>
-						<Timer />
+								{Object.entries(allEvents).map(([event_id, event_obj], _i) => {
+									return (
+										<Option value={event_id} key={event_id}>
+											{event_obj.eventName}
+										</Option>
+									);
+								})}
+							</Select>
+							<Select
+								value={currentSessionId}
+								onChange={(_event, session_id) => {
+									if (typeof session_id === "string")
+										setCurrentSessionId(session_id);
+								}}
+							>
+								{Object.entries(sessions).map(
+									([session_id, session_obj], _i) => {
+										return (
+											<Option value={session_id} key={session_id}>
+												{session_obj?.name}
+											</Option>
+										);
+									}
+								)}
+							</Select>
+						</Stack>
+						<Box
+							flex={"1"}
+							textAlign={"center"}
+							sx={{
+								alignContent: "end",
+								width: "100%",
+								justifyItems: "center",
+							}}
+						>
+							<Typography
+								marginLeft={"auto"}
+								marginRight={"auto"}
+								level="body-md"
+								maxWidth={"500px"}
+								textAlign={"justify"}
+								sx={{ textAlignLast: "center" }}
+							>
+								<Suspense
+									fallback={
+										<Skeleton animation={"wave"} variant="inline">
+											{placeholderScrambles[cubeType]}
+										</Skeleton>
+									}
+								>
+									{/* {scramble?.toString()} */}
+									<Scramble onScrambleLoaded={(s) => setScramble(s)} />
+								</Suspense>
+							</Typography>
+						</Box>
+						<Box
+							sx={(theme) => ({
+								zIndex: "100",
+								width: "100%",
+								height: "100%",
+								position: "fixed",
+								pointerEvents: solving ? "all" : "none",
+								background: theme.palette.background.popup,
+								opacity: solving ? 0.6 : 0,
+								transition: "opacity 200ms ease",
+							})}
+						/>
+						<Box
+							flex="1"
+							textAlign={"center"}
+							sx={{
+								position: "relative",
+								zIndex: "101",
+								transition: "filter 250ms ease",
+								width: "100%",
+								flexBasis: "calc(min(25cqw, 96px)*2)",
+								containerType: "inline-size",
+								containerName: "timer-text-container",
+							}}
+						>
+							<Timer />
+						</Box>
 					</Box>
 					<Stack
 						marginBottom={
@@ -271,6 +282,7 @@ export default function TimerPage() {
 								zIndex: 300,
 								top: "-2em",
 								right: "12px",
+								userSelect: "none",
 							}}
 						>
 							{footerOpen ? "Hide Footer" : "Show Footer"}

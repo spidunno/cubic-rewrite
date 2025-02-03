@@ -78,7 +78,7 @@ export default function Settings() {
 				flex={"1"}
 				sx={{
 					overflowY: "auto",
-					padding: "12px",
+					padding: "16px",
 					scrollbarGutter: "stable",
 				}}
 			>
