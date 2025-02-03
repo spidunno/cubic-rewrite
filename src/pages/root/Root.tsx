@@ -145,9 +145,9 @@ function Topbar() {
 function Sidebar() {
 	const matches = {
 		"/": useMatch("/"),
-		"/settings": useMatch("/settings"),
 		"/solves": useMatch("/solves"),
 		"/sessions": useMatch("/sessions"),
+		"/settings": useMatch("/settings/*"),
 	};
 	const [sidebarCollapsed, setSidebarCollapsed] = useAtom(sidebarCollapsedAtom);
 
