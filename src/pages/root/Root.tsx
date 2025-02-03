@@ -19,7 +19,7 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 // import { ErrorBoundary } from "react-error-boundary";
 
-import type { MaterialSymbol } from "../assets/material-symbols/index.d.ts";
+import type { MaterialSymbol } from "../../assets/material-symbols/index.d.ts";
 
 import "../../assets/fonts/inter/index.css";
 import "../../assets/fonts/afacad/index.css";
