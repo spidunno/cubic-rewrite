@@ -224,6 +224,7 @@ export default function TimerPage() {
 					</Box>
 					<Box
 						sx={(theme) => ({
+							zIndex: "100",
 							width: "100%",
 							height: "100%",
 							position: "fixed",
@@ -238,7 +239,7 @@ export default function TimerPage() {
 						textAlign={"center"}
 						sx={{
 							position: "relative",
-							zIndex: "99",
+							zIndex: "101",
 							transition: "filter 250ms ease",
 							width: "100%",
 							flexBasis: "calc(min(25cqw, 96px)*2)",
@@ -248,44 +249,46 @@ export default function TimerPage() {
 					>
 						<Timer />
 					</Box>
-				</Box>
-				<Stack
-					marginBottom={isSmallScreen ? (footerOpen ? "0px" : "-500px") : "0px"}
-					direction={"column"}
-					position={"relative"}
-					height={"350px"}
-					maxHeight="350px"
-					gap={"0"}
-				>
-					<Link
-						onClick={() => _setFooterOpen(!footerOpen)}
-						color="neutral"
-						sx={{
-							display: "none",
-							"@media (max-width: 600px)": {
-								display: "inline",
-							},
-							position: "absolute",
-							zIndex: 300,
-							top: "-2em",
-							right: "12px",
-						}}
-					>
-						{footerOpen ? "Hide Footer" : "Show Footer"}
-					</Link>
-
-					<Box
-						borderTop={(theme) =>
-							`1px solid ${theme.palette.neutral.outlinedBorder}`
+					<Stack
+						marginBottom={
+							isSmallScreen ? (footerOpen ? "-24px" : "-500px") : "-24px"
 						}
+						direction={"column"}
+						position={"relative"}
 						height={"350px"}
 						maxHeight="350px"
-						// minHeight={"500px"}
-						sx={{ overflowY: "auto", scrollbarGutter: "stable" }}
+						gap={"0"}
 					>
-						<Solves />
-					</Box>
-				</Stack>
+						<Link
+							onClick={() => _setFooterOpen(!footerOpen)}
+							color="neutral"
+							sx={{
+								display: "none",
+								"@media (max-width: 600px)": {
+									display: "inline",
+								},
+								position: "absolute",
+								zIndex: 300,
+								top: "-2em",
+								right: "12px",
+							}}
+						>
+							{footerOpen ? "Hide Footer" : "Show Footer"}
+						</Link>
+
+						<Box
+							borderTop={(theme) =>
+								`1px solid ${theme.palette.neutral.outlinedBorder}`
+							}
+							height={"325px"}
+							maxHeight="325px"
+							// minHeight={"500px"}
+							sx={{ overflowY: "auto", scrollbarGutter: "stable" }}
+						>
+							<Solves />
+						</Box>
+					</Stack>
+				</Box>
 			</Stack>
 		</>
 	);
