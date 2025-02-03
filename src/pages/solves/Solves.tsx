@@ -27,29 +27,33 @@ export default function Solves() {
 	const [solves] = useAtom(solvesAtom);
 
 	return (
-		<Box width={"100%"} height={"100%"}>
-			<Table>
-				{/* <thead>
+		<Box width={"100%"} height={"100%"} alignContent={solves.length === 0 ? "center" : "start"}>
+			{solves.length === 0 ? (
+				<Typography justifySelf={"center"} color="neutral">Nothing here yet...</Typography>
+			) : (
+				<Table>
+					{/* <thead>
 					<th>Solve Time</th>
 					<th>Scramble</th>
 				</thead> */}
-				<tbody>
-					{solves
-						.map((v, i) => [i, v] as const)
-						.sort((a, b) => {
-							return a[1].createdAt - b[1].createdAt;
-						})
-						.reverse()
-						.map((v, i, _a) => (
-							<SolveDisplay
-								index={i}
-								solvesArrIndex={v[0]}
-								solve={v[1]}
-								key={v[1].id}
-							/>
-						))}
-				</tbody>
-			</Table>
+					<tbody>
+						{solves
+							.map((v, i) => [i, v] as const)
+							.sort((a, b) => {
+								return a[1].createdAt - b[1].createdAt;
+							})
+							.reverse()
+							.map((v, i, _a) => (
+								<SolveDisplay
+									index={i}
+									solvesArrIndex={v[0]}
+									solve={v[1]}
+									key={v[1].id}
+								/>
+							))}
+					</tbody>
+				</Table>
+			)}
 		</Box>
 	);
 }
@@ -105,8 +109,10 @@ function SolveDisplay({
 							};
 							setSolves([...solves]);
 						}}
-						sx={theme => ({
-							color: solve.plusTwo ? `rgba(${theme.palette.warning.mainChannel} / 1)` : undefined
+						sx={(theme) => ({
+							color: solve.plusTwo
+								? `rgba(${theme.palette.warning.mainChannel} / 1)`
+								: undefined,
 						})}
 						color={solve.plusTwo ? "warning" : "neutral"}
 						variant="plain"
@@ -122,8 +128,10 @@ function SolveDisplay({
 							setSolves([...solves]);
 						}}
 						color={solve.dnf ? "danger" : "neutral"}
-						sx={theme => ({
-							color: solve.dnf ? `rgba(${theme.palette.danger.mainChannel} / 1)` : undefined
+						sx={(theme) => ({
+							color: solve.dnf
+								? `rgba(${theme.palette.danger.mainChannel} / 1)`
+								: undefined,
 						})}
 						variant="plain"
 					>
@@ -151,11 +159,16 @@ function SolveDisplay({
 				}}
 			>
 				<ModalDialog variant="outlined" role="alertdialog">
-					<DialogTitle sx={{display: "block"}}>
+					<DialogTitle sx={{ display: "block" }}>
 						Delete this solve?
 						{/* <br/> */}
 						<Typography level="body-xs">
-							<Link to="/settings/other#ask-before-delete" underline="always" color="neutral" component={RouterLink}>
+							<Link
+								to="/settings/other#ask-before-delete"
+								underline="always"
+								color="neutral"
+								component={RouterLink}
+							>
 								Don't want this? You can disable this popup here.
 							</Link>
 						</Typography>

@@ -15,7 +15,7 @@ import {
 import NavButton from "./NavButton";
 import { Icon } from "../../components/Icon";
 import { sidebarCollapsedAtom } from "../../state/ui";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 // import { ErrorBoundary } from "react-error-boundary";
 
@@ -35,6 +35,7 @@ export default function Root() {
 	const cubeType = useAtomValue(cubeTypeAtom);
 	const location = useLocation();
 	const isTransitioning = useViewTransitionState(location);
+	// const [mobileSidebarCollapsed, setMobileSidebarCollapsed] = useState(true);
 	useEffect(() => {
 		nextScramble(cubeType);
 	}, [cubeType]);
@@ -42,8 +43,9 @@ export default function Root() {
 	return (
 
 			<Stack direction="column" width="100%" height="100vh">
-				<Topbar />
+				<Topbar/>
 				<Stack direction={"row"} flex={"1"} height="100%">
+					<MobileSidebar/>
 					<Sidebar />
 					<Box sx={{ height: "100%" }} flex={"1"}>
 						<div
@@ -65,7 +67,7 @@ export default function Root() {
 }
 
 function Topbar() {
-	const [sidebarCollapsed, setSidebarCollapsed] = useAtom(sidebarCollapsedAtom);
+	const [sidebarCollapsed, setSidebarCollapsed] = useAtom(mobileSidebarCollapsedAtom);
 
 	return (
 		<Box
@@ -160,6 +162,7 @@ function Sidebar() {
 				"@media (max-width: 600px)": {
 					// display: sidebarCollapsed ? "none" : undefined,
 					position: "absolute",
+					display: "none",
 					zIndex: "1000",
 					transition: "width 150ms linear, margin-left 250ms ease",
 
@@ -278,6 +281,128 @@ function Sidebar() {
 	);
 }
 
+function MobileSidebar() {
+	const [sidebarCollapsed, _setSidebarCollapsed] = useAtom(mobileSidebarCollapsedAtom)
+	const matches = {
+		"/": useMatch("/"),
+		"/solves": useMatch("/solves"),
+		"/sessions": useMatch("/sessions"),
+		"/settings": useMatch("/settings/*"),
+	};
+
+	return (
+		<Stack
+			sx={(theme) => ({
+				zIndex: "800",
+				display: "none",
+				overflow: "hidden",
+				backgroundColor: theme.palette.background.body,
+				"@media (max-width: 600px)": {
+					display: "block",
+					// display: sidebarCollapsed ? "none" : undefined,
+					position: "absolute",
+					zIndex: "1000",
+					transition: "width 150ms linear, margin-left 250ms ease",
+
+					// width: "240px",
+					marginLeft: sidebarCollapsed ? "-240px" : "0",
+					height: `calc(100% - 64px)`,
+				},
+				viewTransitionName: "sidebar",
+
+				width: sidebarCollapsed ? "96px" : "240px",
+				transition: "width 150ms ease, margin-left 150ms ease",
+				borderRight: `1px solid ${theme.palette.neutral.outlinedBorder}`,
+				height: `100%`,
+				// flex: "1",
+				padding: "26px",
+			})}
+			direction="column"
+			alignItems="stretch"
+			justifyItems={"center"}
+		>
+			<Stack
+				direction={"column"}
+				justifyItems={"center"}
+				alignItems={"stretch"}
+				width={"100%"}
+				spacing={"8px"}
+				// padding={"26px"}
+			>
+				<SidebarButton
+					icon="timer"
+					active={!!matches["/"]}
+					title="Timer"
+					to="/"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="list_alt"
+					active={!!matches["/solves"]}
+					title="Solves"
+					to="/solves"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="view_stream"
+					active={!!matches["/sessions"]}
+					title="Sessions"
+					to="/sessions"
+					iconButton={sidebarCollapsed}
+				/>
+				<SidebarButton
+					icon="settings"
+					active={!!matches["/settings"]}
+					title="Settings"
+					to="/settings"
+					iconButton={sidebarCollapsed}
+				/>
+			</Stack>
+			<Box
+				sx={{
+					marginTop: "auto",
+					width: "188px",
+					height: "44px",
+					// display: "flex",
+					flexDirection: "row",
+					justifyContent: "center",
+					display: "flex",
+					"@media (max-width: 600px)": {
+						// display: "none"
+						visibility: "hidden",
+					},
+				}}
+			>
+				<QbqLogo
+					style={{
+						display: "inline-block",
+						width: "44px",
+						height: "44px",
+						minWidth: "44px",
+						minHeight: "44px",
+					}}
+					height={"44px"}
+					width={"44px"}
+				/>
+				<Typography
+					component={"div"}
+					sx={{
+						marginLeft: sidebarCollapsed ? "44px" : "12px",
+						transition: "margin-left 200ms ease, letter-spacing 300ms ease",
+						letterSpacing: sidebarCollapsed ? "1rem" : "normal",
+						userSelect: "none",
+					}}
+					fontFamily={"Afacad"}
+					fontSize={"32px"}
+					fontWeight={"600"}
+				>
+					qbq
+				</Typography>
+			</Box>
+		</Stack>
+	);
+}
+
 function SidebarButton(props: {
 	icon: MaterialSymbol;
 	title: string;
@@ -285,6 +410,7 @@ function SidebarButton(props: {
 	to: To;
 	iconButton?: boolean;
 }) {
+	const setMobileSidebarCollapsed = useSetAtom(mobileSidebarCollapsedAtom)
 	return (
 		<Tooltip
 			title={props.title}
@@ -300,6 +426,9 @@ function SidebarButton(props: {
 				variant={props.active ? "soft" : "plain"}
 				color="primary"
 				to={props.to}
+				onClick={() => {
+					setMobileSidebarCollapsed(true);
+				}}
 				icon={<Icon icon={props.icon} filled={props.active} />}
 			>
 				{props.title}
@@ -307,3 +436,5 @@ function SidebarButton(props: {
 		</Tooltip>
 	);
 }
+
+const mobileSidebarCollapsedAtom = atom(true);
