@@ -5,7 +5,7 @@ import { DefaultColorScheme } from "@mui/joy/styles/types";
 import { atomFamily } from "jotai/utils";
 import { WritableAtom } from "jotai";
 
-export const defaultFreezeTimeLength = 250;
+export const defaultFreezeTimeLength = 200;
 
 export interface Session {
 	id: string;

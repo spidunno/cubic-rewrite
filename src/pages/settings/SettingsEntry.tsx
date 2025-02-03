@@ -10,19 +10,25 @@ export function SettingsEntry({
 	return (
 		<FormControl
 			// orientation={isSmallScreen ? "horizontal" : "vertical"}
-			sx={{ "@media (max-width: 600px)": {
-				flexDirection: "column",
-				gap: "12px"
-			}, 
-			flexDirection: "row", gap: "128px", justifyContent: "space-between", alignContent: "start", alignItems: "start" }}
+			sx={{
+				"@media (max-width: 600px)": {
+					flexDirection: "column",
+					gap: "12px",
+				},
+				flexDirection: "row",
+				gap: "64px",
+				justifyContent: "space-between",
+				alignContent: "start",
+				alignItems: "start",
+			}}
 		>
 			<Box maxWidth={"20em"}>
 				<FormLabel>{label}</FormLabel>
 				<FormHelperText sx={{ mt: 0 }}>{description}</FormHelperText>
 			</Box>
-			<Box>
-			{children}
-			</Box>
+			{/* <Box sx={{ display: "inline"}}> */}
+				{children}
+			{/* </Box> */}
 		</FormControl>
 	);
 }

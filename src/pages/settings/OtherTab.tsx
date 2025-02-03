@@ -21,6 +21,11 @@ export function OtherTab() {
 				<Input
 					id="time-start-delay"
 					type="number"
+					slotProps={{
+						input: {
+							step: 0.1
+						}
+					}}
 					value={freezeTimeLength / 1000}
 					startDecorator={
 						<>
@@ -54,6 +59,9 @@ export function OtherTab() {
 				description="Whether or not to confirm that you want to delete a solve first when pressing the delete button."
 			>
 				<Switch
+					sx={{
+						alignSelf: "start"
+					}}
 					size="lg"
 					id="ask-before-delete"
 					onChange={(event) => setAskBeforeDelete(event.target.checked)}
