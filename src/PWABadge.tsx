@@ -17,9 +17,8 @@ function PWABadge() {
         registerPeriodicSync(period, swUrl, r)
       }
       else if (r?.installing) {
-        r.installing.addEventListener('statechange', (e) => {
-          const sw = e.target as ServiceWorker
-          if (sw.state === 'activated')
+        r.installing.addEventListener('statechange', function() {
+          if (this.state === 'activated')
             registerPeriodicSync(period, swUrl, r)
         })
       }

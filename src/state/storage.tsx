@@ -42,25 +42,36 @@ export interface DbShape {
 
 const defaultSession = createSession("My Session", Date.now(), "default");
 
+const initialData = {
+	sessions: { [defaultSession.id]: defaultSession },
+	solves: [],
+	"current-session": defaultSession.id,
+	"color-scheme": "system",
+	"freeze-time-length": defaultFreezeTimeLength,
+	"ask-before-delete": true,
+} satisfies DbShape;
+
 export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 	name: "qbq-data",
-	// @ts-expect-error
-	initialData: {
-		sessions: {[defaultSession.id]: defaultSession},
-		solves: [],
-		"current-session": defaultSession.id,
-		"color-scheme": "system",
-		"freeze-time-length": defaultFreezeTimeLength,
-		"ask-before-delete": true
-	} as DbShape,
+	initialData: initialData,
+migrations: []
 });
 
-type FamilyGetter = <T extends keyof DbShape>(param: T) => WritableAtom<DbShape[T], [DbShape[T]], Promise<void>>;
-function familyGetter(param: keyof DbShape) {
-	return _storageDb.item(param) as unknown as WritableAtom<DbShape[keyof DbShape], [DbShape[keyof DbShape]], Promise<void>>
+
+
+function familyGetter<DbParam extends keyof DbShape>(param: DbParam): WritableAtom<DbShape[DbParam] | undefined, [DbShape[DbParam]], Promise<void>> {
+	// SAFETY: there is a potential scenario where the type of a field that's defined in DbShape doesn't match the actual type that exists in the MiniDb.
+	// For example, if a refactor has changed the type of a field. This could potentially, currently, result in an error, and it means this function is type-unsound.
+	// The way to handle this is to make use of the version field and onVersionMismatch method in the constructor of MiniDb, or better yet add a migration function
+	// that checks the sanctity of the data.
+	// Adding a new field to the DB will always be safe because we force the end user to handle undefined. Removing a field will always be safe because we 
+	// require that the parameter be a key of the DB.
+	return (_storageDb.item(param) as WritableAtom<DbShape[DbParam] | undefined, [DbShape[DbParam]], Promise<void>>
+	);
 }
 
-export const storageDb = atomFamily(familyGetter) as FamilyGetter;
+
+export const storageDb: typeof familyGetter = atomFamily(familyGetter);
 
 export function createSession(
 	name: string,

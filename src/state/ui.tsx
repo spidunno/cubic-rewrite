@@ -21,5 +21,3 @@ export const footerOpenAtom = atom<boolean, [boolean], void>(
 		set(baseFooterOpenStateAtom, arg);
 	}
 );
-
-// sidebarCollapsedAtom.
