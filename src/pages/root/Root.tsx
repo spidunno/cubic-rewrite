@@ -141,7 +141,7 @@ function Topbar() {
 					qbq
 				</Typography> */}
 			{/* </Stack> */}
-			<PWABadge/>
+			{/* <PWABadge/> */}
 		</Box>
 	);
 }
