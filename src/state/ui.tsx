@@ -13,7 +13,7 @@ export const sidebarCollapsedAtom = atom<boolean, [boolean], void>(
 	}
 );
 
-const baseFooterOpenStateAtom = atom(localStorage.getItem(sidebarCollapsedLocalstorageKey) === "true");
+const baseFooterOpenStateAtom = atom(localStorage.getItem(footerOpenLocalstorageKey) === "true");
 export const footerOpenAtom = atom<boolean, [boolean], void>(
 	(get) => get(baseFooterOpenStateAtom),
 	(_get, set, arg) => {

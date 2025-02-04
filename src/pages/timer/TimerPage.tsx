@@ -38,7 +38,6 @@ import { DatabaseSolve, defaultSession } from "../../state/storage";
 import { nanoid } from "nanoid";
 import { Alg } from "cubing/alg";
 import { footerOpenAtom } from "../../state/ui";
-import { useMediaQuery } from "usehooks-ts";
 import Solves from "../solves/Solves";
 
 export default function TimerPage() {
@@ -60,7 +59,7 @@ export default function TimerPage() {
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
 	const solves = useAtomValue(solvesAtom) || [];
 	const setSolves = useSetAtom(solvesAtom);
-	const isSmallScreen = useMediaQuery("(max-width: 600px)");
+	// const isSmallScreen = useMediaQuery("(max-width: 600px)");
 	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
 	useEffect(() => {
@@ -262,8 +261,11 @@ export default function TimerPage() {
 						</Box>
 					</Box>
 					<Stack
+						// marginBottom={
+						// 	isSmallScreen ? (footerOpen ? "0px" : "-500px") : "0px"
+						// }
 						marginBottom={
-							isSmallScreen ? (footerOpen ? "-24px" : "-500px") : "-24px"
+							footerOpen ? "0px" : "-500px"
 						}
 						direction={"column"}
 						position={"relative"}
@@ -275,10 +277,10 @@ export default function TimerPage() {
 							onClick={() => _setFooterOpen(!footerOpen)}
 							color="neutral"
 							sx={{
-								display: "none",
-								"@media (max-width: 600px)": {
+								// display: "none",
+								// "@media (max-width: 600px)": {
 									display: "inline",
-								},
+								// },
 								position: "absolute",
 								zIndex: 300,
 								top: "-2em",
