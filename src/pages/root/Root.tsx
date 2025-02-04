@@ -230,7 +230,7 @@ function Sidebar() {
 					icon="settings"
 					active={!!matches["/settings"]}
 					title="Settings"
-					to="/settings"
+					to="/settings/appearance"
 					iconButton={sidebarCollapsed}
 				/>
 			</Stack>

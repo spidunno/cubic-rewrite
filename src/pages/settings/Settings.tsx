@@ -56,8 +56,8 @@ export default function Settings() {
 				aria-label="Settings tabs"
 				value={
 					(settingsRoute.children || []).filter(
-						(v) => v.path && pathname.endsWith(v.path)
-					)[0].path
+						(v) => v?.path && pathname.endsWith(v?.path)
+					)[0]?.path
 				}
 			>
 				<TabList
