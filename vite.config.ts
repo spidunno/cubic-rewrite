@@ -21,7 +21,7 @@ export default defineConfig({
 				disabled: false,
 				config: true,
 			},
-			
+			includeAssets: ["fonts/afacad/*.css", "fonts/afacad/files/*", "fonts/azeret-mono/*.css", "fonts/azeret-mon/files/*", "fonts/inter/*.css", "fonts/inter/files/*", "material-symbols/*.css", "material-symbols/*.woff2"],
 			manifest: {
 				name: "qbq - Speedcubing Timer",
 				short_name: "qbq",

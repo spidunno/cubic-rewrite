@@ -21,10 +21,6 @@ import { useEffect } from "react";
 
 import type { MaterialSymbol } from "../../assets/material-symbols/index.d.ts";
 
-import "../../assets/fonts/inter/index.css";
-import "../../assets/fonts/afacad/index.css";
-import "../../assets/fonts/azeret-mono/index.css";
-
 import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
 import { cubeTypeAtom, scrambleAtom } from "../../state/timer";
