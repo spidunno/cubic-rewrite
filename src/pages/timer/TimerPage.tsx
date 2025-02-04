@@ -34,7 +34,7 @@ import {
 	sessionsAtom,
 	solvesAtom,
 } from "../../state/general";
-import { DatabaseSolve } from "../../state/storage";
+import { DatabaseSolve, defaultSession } from "../../state/storage";
 import { nanoid } from "nanoid";
 import { Alg } from "cubing/alg";
 import { footerOpenAtom } from "../../state/ui";
@@ -56,9 +56,10 @@ export default function TimerPage() {
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
 	const down = useRef<boolean>(false);
-	const sessions = useAtomValue(sessionsAtom);
+	const sessions = useAtomValue(sessionsAtom) || { [defaultSession.id]: defaultSession };
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
-	const [solves, setSolves] = useAtom(solvesAtom);
+	const solves = useAtomValue(solvesAtom) || [];
+	const setSolves = useSetAtom(solvesAtom);
 	const isSmallScreen = useMediaQuery("(max-width: 600px)");
 	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
@@ -86,7 +87,7 @@ export default function TimerPage() {
 			plusTwo: false,
 			rawTime: duration,
 			scramble: endScramble?.toString() || "",
-			sessionId: currentSessionId,
+			sessionId: currentSessionId || "default",
 			time: duration,
 		};
 		setSolves([solve, ...solves]);

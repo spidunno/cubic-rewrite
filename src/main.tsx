@@ -45,7 +45,7 @@ const ThemeUpdater = () => {
 	const themeMode = useAtomValue(themeModeAtom);
 	const { setMode } = useColorScheme();
 	useEffect(() => {
-		setMode(themeMode);
+		setMode(themeMode || "system");
 	}, [themeMode]);
 	return null;
 };

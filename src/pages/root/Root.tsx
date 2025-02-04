@@ -28,6 +28,7 @@ import "../../assets/fonts/azeret-mono/index.css";
 import QbqLogo from "../../assets/logo.svg?react";
 import { _storageDb } from "../../state/storage";
 import { cubeTypeAtom, scrambleAtom } from "../../state/timer";
+import PWABadge from "../../PWABadge.tsx";
 
 export default function Root() {
 	useAtomValue(_storageDb.suspendBeforeInit);
@@ -140,6 +141,7 @@ function Topbar() {
 					qbq
 				</Typography> */}
 			{/* </Stack> */}
+			<PWABadge/>
 		</Box>
 	);
 }

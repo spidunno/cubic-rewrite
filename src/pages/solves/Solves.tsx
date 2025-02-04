@@ -15,7 +15,7 @@ import {
 	Typography,
 } from "@mui/joy";
 import { solvesAtom } from "../../state/general";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { DatabaseSolve } from "../../state/storage";
 import { formatTime } from "../../util/timeFormatting";
 import { Icon } from "../../components/Icon";
@@ -24,7 +24,7 @@ import { askBeforeDeleteAtom } from "../../state/settings";
 import { Link as RouterLink } from "react-router";
 
 export default function Solves() {
-	const [solves] = useAtom(solvesAtom);
+	const solves = useAtomValue(solvesAtom) || [];
 
 	return (
 		<Box width={"100%"} height={"100%"} alignContent={solves.length === 0 ? "center" : "start"}>
@@ -67,7 +67,8 @@ function SolveDisplay({
 	index: number;
 	solvesArrIndex: number;
 }) {
-	const [solves, setSolves] = useAtom(solvesAtom);
+	const solves = useAtomValue(solvesAtom) || [];
+	const setSolves = useSetAtom(solvesAtom);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const askBeforeDelete = useAtomValue(askBeforeDeleteAtom);
 

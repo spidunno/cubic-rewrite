@@ -40,7 +40,7 @@ export interface DbShape {
 	"ask-before-delete": boolean;
 }
 
-const defaultSession = createSession("My Session", Date.now(), "default");
+export const defaultSession = createSession("My Session", Date.now(), "default");
 
 const initialData = {
 	sessions: { [defaultSession.id]: defaultSession },
@@ -54,7 +54,10 @@ const initialData = {
 export const _storageDb = new MiniDb<DbShape[keyof DbShape]>({
 	name: "qbq-data",
 	initialData: initialData,
-migrations: []
+	version: 0,
+	migrations: {
+
+	}
 });
 
 

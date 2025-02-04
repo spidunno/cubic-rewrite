@@ -26,7 +26,7 @@ export function OtherTab() {
 							step: 0.1
 						}
 					}}
-					value={freezeTimeLength / 1000}
+					value={(freezeTimeLength || defaultFreezeTimeLength) / 1000}
 					startDecorator={
 						<>
 							<Tooltip variant="soft" title="Reset to Default">
@@ -49,7 +49,7 @@ export function OtherTab() {
 						if (!Number.isNaN(value)) {
 							setFreezeTimeLength(value * 1000);
 						} else {
-							setFreezeTimeLength(freezeTimeLength);
+							setFreezeTimeLength(freezeTimeLength || defaultFreezeTimeLength);
 						}
 					}}
 				/>
