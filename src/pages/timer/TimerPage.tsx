@@ -55,7 +55,9 @@ export default function TimerPage() {
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
 	const down = useRef<boolean>(false);
-	const sessions = useAtomValue(sessionsAtom) || { [defaultSession.id]: defaultSession };
+	const sessions = useAtomValue(sessionsAtom) || {
+		[defaultSession.id]: defaultSession,
+	};
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
 	const solves = useAtomValue(solvesAtom) || [];
 	const setSolves = useSetAtom(solvesAtom);
@@ -97,7 +99,9 @@ export default function TimerPage() {
 		nextScramble(cubeType);
 	}, [timeStartedAt, cubeType]);
 
-	const downCallback = (event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>) => {
+	const downCallback = (
+		event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>
+	) => {
 		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
 		if ("key" in event && event.key !== " ") {
 			if (!solving) return;
@@ -114,7 +118,9 @@ export default function TimerPage() {
 			}, freezeTimeLength);
 		}
 	};
-	const upCallback = (event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>) => {
+	const upCallback = (
+		event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>
+	) => {
 		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
 		if ("key" in event && event.key !== " ") return;
 		if (down.current === false) return;
@@ -158,14 +164,20 @@ export default function TimerPage() {
 						flexDirection: "column",
 					}}
 				>
-					<Box sx={{
-						width: "100%",
-						height: "100%",
-						display: "flex",
-						flexDirection: "column",
-					}} onTouchStart={downCallback} onTouchEnd={upCallback}>
+					<Box
+						sx={{
+							width: "100%",
+							maxHeight: "100%",
+							flex: "1",
+							display: "flex",
+							flexDirection: "column",
+						}}
+						onTouchStart={downCallback}
+						onTouchEnd={upCallback}
+					>
 						<Stack
-						onTouchStart={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()}
+							onTouchStart={(event) => event.stopPropagation()}
+							onTouchEnd={(event) => event.stopPropagation()}
 							direction={"row"}
 							gap={"12px"}
 							marginLeft={"12px"}
@@ -264,13 +276,12 @@ export default function TimerPage() {
 						// marginBottom={
 						// 	isSmallScreen ? (footerOpen ? "0px" : "-500px") : "0px"
 						// }
-						marginBottom={
-							footerOpen ? "0px" : "-500px"
-						}
+						marginBottom={footerOpen ? "0px" : "-500px"}
 						direction={"column"}
 						position={"relative"}
-						height={"350px"}
+						// height={"100%"}
 						maxHeight="350px"
+						flex={"1"}
 						gap={"0"}
 					>
 						<Link
@@ -279,7 +290,7 @@ export default function TimerPage() {
 							sx={{
 								// display: "none",
 								// "@media (max-width: 600px)": {
-									display: "inline",
+								display: "inline",
 								// },
 								position: "absolute",
 								zIndex: 300,
@@ -295,8 +306,8 @@ export default function TimerPage() {
 							borderTop={(theme) =>
 								`1px solid ${theme.palette.neutral.outlinedBorder}`
 							}
-							height={"325px"}
-							maxHeight="325px"
+							// height={"325px"}
+							// maxHeight="350px"
 							// minHeight={"500px"}
 							sx={{ overflowY: "auto", scrollbarGutter: "stable" }}
 						>
