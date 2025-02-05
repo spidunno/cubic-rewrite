@@ -1,7 +1,7 @@
 import { Typography } from "@mui/joy";
 import { useAtomValue } from "jotai";
 import { canStartAtom, finalTimeAtom, solvingAtom, spaceTimerStartedAtom, timeStartedAtAtom } from "../../state/timer";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { formatTime } from "../../util/timeFormatting";
 
 export default function Timer() {
@@ -13,7 +13,7 @@ export default function Timer() {
 	const canStart = useAtomValue(canStartAtom);
 	const textRef = useRef<HTMLDivElement>(null);
 	const animationFrameRef = useRef<number>(-1);
-	const frameCallback = (_time: number) => {
+	const frameCallback = useCallback((_time: number) => {
 		// if (textRef.current) {
 			const currentVal =
 				solving ? Date.now() - (timeStartedAt?.valueOf() || 0)
@@ -21,7 +21,7 @@ export default function Timer() {
 			setTimerText(formatTime(currentVal));
 		// }
 		animationFrameRef.current = requestAnimationFrame(frameCallback);
-	};
+	},[finalTime, solving, timeStartedAt]);
 
 	useEffect(() => {
 		animationFrameRef.current = requestAnimationFrame(frameCallback);
@@ -29,7 +29,7 @@ export default function Timer() {
 		return () => {
 			cancelAnimationFrame(animationFrameRef.current);
 		};
-	}, [timeStartedAt, finalTime, solving]);
+	}, [timeStartedAt, finalTime, solving, frameCallback]);
 
 	return (
 		<Typography

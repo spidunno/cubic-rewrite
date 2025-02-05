@@ -17,8 +17,8 @@ export default function NavButton(props: NavButtonProps) {
 		<ButtonLink
 			{...propsWithoutOther}
 			sx={{ justifyContent: "start", overflow: "hidden", paddingLeft: '16px' }}
-
-			//@ts-expect-error
+			// @ts-expect-error due to issues with mui and typescript, the component prop is 
+			// lost from styledcomponents, and wouldn't be accepted anyway because it's expecting a button and not an anchor.
 			component={Link}
 			startDecorator={icon}
 			slotProps={{

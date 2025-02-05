@@ -8,7 +8,7 @@ export default defineConfig({
 	worker: {
 		format: "es"
 	},
-	//@ts-expect-error
+	//@ts-expect-error process is expected to exist but we don't want to install node types just for vite.config.ts
 	base: process.env.BASE_PATH || "/",
 	plugins: [
     svgr(),
