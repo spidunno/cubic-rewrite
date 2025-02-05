@@ -59,14 +59,14 @@ export default function TimerPage() {
 		[defaultSession.id]: defaultSession,
 	};
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
-	const solves = useAtomValue(solvesAtom) || [];
+	const solves = useAtomValue(solvesAtom);
 	const setSolves = useSetAtom(solvesAtom);
 	// const isSmallScreen = useMediaQuery("(max-width: 600px)");
 	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
 	useEffect(() => {
 		setCanStart(false);
-	}, []);
+	}, [setCanStart]);
 
 	const startSolve = useCallback(() => {
 		setFinalTime(0);
@@ -74,7 +74,7 @@ export default function TimerPage() {
 		setTimeStartedAt(startTime);
 		setSolving(true);
 		setCanStart(false);
-	}, []);
+	}, [setCanStart, setFinalTime, setSolving, setTimeStartedAt]);
 	const endSolve = useCallback(() => {
 		const endTime = Date.now();
 		const endScramble = scramble?.toString();
@@ -91,15 +91,15 @@ export default function TimerPage() {
 			sessionId: currentSessionId || "default",
 			time: duration,
 		};
-		setSolves([solve, ...solves]);
+		setSolves([solve, ...(solves || [])]);
 
 		setFinalTime(duration);
 		setSolving(false);
 		setTimeStartedAt(null);
 		nextScramble(cubeType);
-	}, [timeStartedAt, cubeType]);
+	}, [scramble, timeStartedAt, cubeType, currentSessionId, setSolves, solves, setFinalTime, setSolving, setTimeStartedAt, nextScramble]);
 
-	const downCallback = (
+	const downCallback = useCallback((
 		event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>
 	) => {
 		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
@@ -117,8 +117,8 @@ export default function TimerPage() {
 				setCanStart(true);
 			}, freezeTimeLength);
 		}
-	};
-	const upCallback = (
+	}, [endSolve, freezeTimeLength, setCanStart, setSpaceTimerStarted, solving]);
+	const upCallback = useCallback((
 		event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>
 	) => {
 		// if (!("key" in event) && event.nativeEvent instanceof TouchEvent) event.preventDefault();
@@ -131,7 +131,7 @@ export default function TimerPage() {
 			startSolve();
 		}
 		setSpaceTimerStarted(0);
-	};
+	}, [canStart, setSpaceTimerStarted, startSolve]);
 
 	useEffect(() => {
 		document.addEventListener("keydown", downCallback);
@@ -141,7 +141,7 @@ export default function TimerPage() {
 			document.removeEventListener("keydown", downCallback);
 			document.removeEventListener("keyup", upCallback);
 		};
-	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted]);
+	}, [finalTime, timeStartedAt, solving, canStart, spaceTimerStarted, downCallback, upCallback]);
 
 	return (
 		<>

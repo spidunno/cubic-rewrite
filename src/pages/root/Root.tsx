@@ -35,7 +35,7 @@ export default function Root() {
 	// const [mobileSidebarCollapsed, setMobileSidebarCollapsed] = useState(true);
 	useEffect(() => {
 		nextScramble(cubeType);
-	}, [cubeType]);
+	}, [cubeType, nextScramble]);
 
 	return (
 

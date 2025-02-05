@@ -18,7 +18,6 @@ export const router = createBrowserRouter(
 			path: "/",
 
 			element: <Root />,
-			//// @ts-expect-error
 			// ErrorBoundary,
 			// errorElement: <ErrorElement/>,
 			children: [
@@ -46,7 +45,7 @@ const ThemeUpdater = () => {
 	const { setMode } = useColorScheme();
 	useEffect(() => {
 		setMode(themeMode || "system");
-	}, [themeMode]);
+	}, [setMode, themeMode]);
 	return null;
 };
 
