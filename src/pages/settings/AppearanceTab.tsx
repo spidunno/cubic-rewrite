@@ -1,10 +1,10 @@
 import { useAtom } from "jotai";
-import { themeModeAtom } from "../../state/settings";
 import { SettingsEntry } from "./SettingsEntry";
 import { Option, Select } from "@mui/joy";
+import { colorSchemeAtom } from "../../state/settings";
 
 export function AppearanceTab() {
-	const [themeMode, setThemeMode] = useAtom(themeModeAtom);
+	const [themeMode, setThemeMode] = useAtom(colorSchemeAtom);
 
 	return (
 		<SettingsEntry

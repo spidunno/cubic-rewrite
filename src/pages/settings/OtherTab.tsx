@@ -1,11 +1,11 @@
 import { useAtom } from "jotai";
 import {
 	askBeforeDeleteAtom,
+	defaultFreezeTimeLength,
 	freezeTimeLengthAtom,
 } from "../../state/settings";
 import { SettingsEntry } from "./SettingsEntry";
 import { Divider, IconButton, Input, Switch, Tooltip } from "@mui/joy";
-import { defaultFreezeTimeLength } from "../../state/storage";
 import { Icon } from "../../components/Icon";
 
 export function OtherTab() {

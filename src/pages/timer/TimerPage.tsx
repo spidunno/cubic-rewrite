@@ -28,17 +28,15 @@ import {
 } from "../../state/timer";
 import { allEvents, placeholderScrambles } from "../../util/cube";
 import Timer from "./Timer";
-import { freezeTimeLengthAtom } from "../../state/settings";
 import {
 	currentSessionIdAtom,
-	sessionsAtom,
-	solvesAtom,
 } from "../../state/general";
-import { DatabaseSolve, defaultSession } from "../../state/storage";
+import { DatabaseSolve, sessionsDb, solvesDb } from "../../state/storage";
 import { nanoid } from "nanoid";
 import { Alg } from "cubing/alg";
 import { footerOpenAtom } from "../../state/ui";
 import Solves from "../solves/Solves";
+import { freezeTimeLengthAtom } from "../../state/settings";
 
 export default function TimerPage() {
 	const [scramble, setScramble] = useState<Alg | null>(null);
@@ -55,12 +53,10 @@ export default function TimerPage() {
 	const [finalTime, setFinalTime] = useAtom(finalTimeAtom);
 	const timeoutRef = useRef<number>(0);
 	const down = useRef<boolean>(false);
-	const sessions = useAtomValue(sessionsAtom) || {
-		[defaultSession.id]: defaultSession,
-	};
+	const sessions = useAtomValue(sessionsDb.values)
 	const [currentSessionId, setCurrentSessionId] = useAtom(currentSessionIdAtom);
-	const solves = useAtomValue(solvesAtom);
-	const setSolves = useSetAtom(solvesAtom);
+	const setSolve = useSetAtom(solvesDb.set);
+
 	// const isSmallScreen = useMediaQuery("(max-width: 600px)");
 	const [footerOpen, _setFooterOpen] = useAtom(footerOpenAtom);
 
@@ -91,13 +87,13 @@ export default function TimerPage() {
 			sessionId: currentSessionId || "default",
 			time: duration,
 		};
-		setSolves([solve, ...(solves || [])]);
+		setSolve(solve.id, solve);
 
 		setFinalTime(duration);
 		setSolving(false);
 		setTimeStartedAt(null);
 		nextScramble(cubeType);
-	}, [scramble, timeStartedAt, cubeType, currentSessionId, setSolves, solves, setFinalTime, setSolving, setTimeStartedAt, nextScramble]);
+	}, [scramble, timeStartedAt, cubeType, currentSessionId, setSolve, setFinalTime, setSolving, setTimeStartedAt, nextScramble]);
 
 	const downCallback = useCallback((
 		event: KeyboardEvent | ReactTouchEvent<HTMLDivElement>

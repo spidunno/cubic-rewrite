@@ -22,12 +22,12 @@ import { useEffect } from "react";
 import type { MaterialSymbol } from "../../assets/material-symbols/index.d.ts";
 
 import QbqLogo from "../../assets/logo.svg?react";
-import { _storageDb } from "../../state/storage";
 import { cubeTypeAtom, scrambleAtom } from "../../state/timer";
-// import PWABadge from "../../PWABadge.tsx";
+import { sessionsDb, solvesDb } from "../../state/storage.tsx";
 
 export default function Root() {
-	useAtomValue(_storageDb.suspendBeforeInit);
+	useAtomValue(sessionsDb.suspendBeforeInit);
+	useAtomValue(solvesDb.suspendBeforeInit);
 	const nextScramble = useSetAtom(scrambleAtom);
 	const cubeType = useAtomValue(cubeTypeAtom);
 	const location = useLocation();

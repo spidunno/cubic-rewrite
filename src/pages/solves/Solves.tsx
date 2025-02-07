@@ -14,9 +14,8 @@ import {
 	Table,
 	Typography,
 } from "@mui/joy";
-import { solvesAtom } from "../../state/general";
 import { useAtomValue, useSetAtom } from "jotai";
-import { DatabaseSolve } from "../../state/storage";
+import { DatabaseSolve, solvesDb, sortedSolvesAtom } from "../../state/storage";
 import { formatTime } from "../../util/timeFormatting";
 import { Icon } from "../../components/Icon";
 import { useState } from "react";
@@ -24,7 +23,7 @@ import { askBeforeDeleteAtom } from "../../state/settings";
 import { Link as RouterLink } from "react-router";
 
 export default function Solves() {
-	const solves = useAtomValue(solvesAtom) || [];
+	const solves = useAtomValue(solvesDb.values);
 
 	return (
 		<Box width={"100%"} height={"100%"} alignContent={solves.length === 0 ? "center" : "start"}>
@@ -67,8 +66,9 @@ function SolveDisplay({
 	index: number;
 	solvesArrIndex: number;
 }) {
-	const solves = useAtomValue(solvesAtom) || [];
-	const setSolves = useSetAtom(solvesAtom);
+	const solves = useAtomValue(sortedSolvesAtom) || [];
+	const setSolves = useSetAtom(solvesDb.set);
+	const deleteSolve = useSetAtom(solvesDb.delete);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const askBeforeDelete = useAtomValue(askBeforeDeleteAtom);
 
@@ -101,14 +101,15 @@ function SolveDisplay({
 				<Stack direction="row" width="100%" justifyContent={"end"} gap="6px">
 					<Button
 						onClick={() => {
-							solves[solvesArrIndex] = {
-								...solves[solvesArrIndex],
+							let solve = solves[solvesArrIndex];
+							solve = {
+								...solve,
 								plusTwo: !solves[solvesArrIndex].plusTwo,
 								time:
 									solves[solvesArrIndex].rawTime +
 									(!solves[solvesArrIndex].plusTwo ? 2000 : 0),
 							};
-							setSolves([...solves]);
+							setSolves(solve.id, solve);
 						}}
 						sx={(theme) => ({
 							color: solve.plusTwo
@@ -122,11 +123,12 @@ function SolveDisplay({
 					</Button>
 					<Button
 						onClick={() => {
-							solves[solvesArrIndex] = {
+							let solve = solves[solvesArrIndex];
+							solve = {
 								...solves[solvesArrIndex],
 								dnf: !solves[solvesArrIndex].dnf,
 							};
-							setSolves([...solves]);
+							setSolves(solve.id, solve);
 						}}
 						color={solve.dnf ? "danger" : "neutral"}
 						sx={(theme) => ({
@@ -143,7 +145,8 @@ function SolveDisplay({
 							if (askBeforeDelete) {
 								setDeleteOpen(true);
 							} else {
-								setSolves([...solves].filter((_v, i) => i !== solvesArrIndex));
+								const solve = solves[solvesArrIndex]
+								deleteSolve(solve.id);
 							}
 						}}
 						color="danger"
@@ -184,7 +187,8 @@ function SolveDisplay({
 							variant="solid"
 							color="danger"
 							onClick={() => {
-								setSolves([...solves].filter((_v, i) => i !== solvesArrIndex));
+								const solve = solves[solvesArrIndex];
+								deleteSolve(solve.id);
 								setDeleteOpen(false);
 							}}
 						>

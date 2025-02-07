@@ -10,7 +10,7 @@ import Sessions from "./pages/sessions/Sessions";
 // import { ErrorBoundary } from "./pages/error/ErrorBoundary";
 import { CssBaseline, CssVarsProvider, extendTheme, useColorScheme } from "@mui/joy";
 import { useAtomValue } from "jotai";
-import { themeModeAtom } from "./state/settings";
+import { colorSchemeAtom } from "./state/settings";
 
 export const router = createBrowserRouter(
 	[
@@ -41,7 +41,7 @@ export const router = createBrowserRouter(
 );
 
 const ThemeUpdater = () => {
-	const themeMode = useAtomValue(themeModeAtom);
+	const themeMode = useAtomValue(colorSchemeAtom);
 	const { setMode } = useColorScheme();
 	useEffect(() => {
 		setMode(themeMode || "system");
