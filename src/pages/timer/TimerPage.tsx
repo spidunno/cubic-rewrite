@@ -302,10 +302,10 @@ export default function TimerPage() {
 							borderTop={(theme) =>
 								`1px solid ${theme.palette.neutral.outlinedBorder}`
 							}
-							// height={"325px"}
+							height={"325px"}
 							// maxHeight="350px"
 							// minHeight={"500px"}
-							sx={{ overflowY: "auto", scrollbarGutter: "stable" }}
+							sx={{ overflowY: "hidden", scrollbarGutter: "stable" }}
 						>
 							<Solves />
 						</Box>
